@@ -3,6 +3,7 @@ from math import *
 
 class Transformacje():
     
+    
     # a = 6378137.000
     # e2 = 0.00669438002290
     
@@ -31,32 +32,33 @@ class Transformacje():
         p = np.sqrt(X**2 + Y**2)
         f = np.arctan(Z/(p * (1 - e2)))
         while True:
-            # N = Np(self, f)
             N = a / np.sqrt(1 - e2 * np.sin(f)**2)
             h = (p / np.cos(f)) - N
             fp = f
             f = np.arctan(Z / (p * (1 - e2 * N / (N + h))))
             if abs(fp - f) < (0.000001/206265):
                 break
-        # N = Np(self, f)
         N = a / np.sqrt(1 - e2 * np.sin(f)**2)
         h = (p / np.cos(f)) - N
         l = np.arctan2(Y, X)
-        return(f, l, h)
-        # return(self.X)
-     
-def dms(x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
-    znak = ' '
-    if x < 0:
-        znak = '-'
-        x = abs(x)
-    x = x * 180/pi
-    d = int(x)
-    m = int((x - d) *  60)
-    s = (x - d - (m/60)) * 3600
-    print(znak, "%3d°%2d'%8.5f''" % (d, m, s))
-    return (d,m,s)
+    
+        dms = []
+        for x in (f,l):
+            znak = ' '
+            if x < 0:
+                znak = '-'
+                x = abs(x)
+            x = x * 180/pi
+            d = int(x)
+            m = int((x - d) *  60)
+            s = (x - d - (m/60)) * 3600
+            dms.append(f"{znak}{d:3d}°{m:2d}'{s:8.5f}''")
+        f_st = dms[0]
+        l_st = dms[1]
+        
+        return(f_st,l_st,h)
 
 if __name__ == '__main__':
     test = Transformacje(100, 200, 300)
+    test.xyz2flh()
     print(test.xyz2flh())
