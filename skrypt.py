@@ -44,6 +44,19 @@ class Transformacje():
         l = np.arctan2(Y, X)
         return(f, l, h)
         # return(self.X)
-            
-test = Transformacje(100, 200, 300)
-print(test.xyz2flh())
+     
+def dms(x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
+    znak = ' '
+    if x < 0:
+        znak = '-'
+        x = abs(x)
+    x = x * 180/pi
+    d = int(x)
+    m = int((x - d) *  60)
+    s = (x - d - (m/60)) * 3600
+    print(znak, "%3d°%2d'%8.5f''" % (d, m, s))
+    return (d,m,s)
+
+if __name__ == '__main__':
+    test = Transformacje(100, 200, 300)
+    print(test.xyz2flh())
