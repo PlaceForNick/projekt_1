@@ -64,6 +64,7 @@ class Transformacje:
     
     
     
+    
 if __name__=='__main__':
     proba= Transformacje(13, 11, 130, 6378137, 0.00669438002290)
     print(proba.fl2PL1992())
