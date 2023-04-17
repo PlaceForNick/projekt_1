@@ -41,7 +41,7 @@ class Transformacje:
         else:
             self.l = radians(podane_l)
         self.h = podane_h
-        self.a = 6378137.000
+        self.a = 6378137
         self.e2 = 0.00669438002290
     
     def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
@@ -125,8 +125,28 @@ class Transformacje:
             y2000 = ygk * m0 + ns * 1000000 + 500000
             return(x2000,y2000) #,xgk,ygk)
 
+    def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
+        a=self.a
+        e2=self.e2
+        f=self.f
+        l=self.l
+        b2 = a**2*(1 - e2)
+        ep2 = (a**2 - b2)/b2
+        dl = l - l0
+        t = tan(f)
+        n2 = ep2 * cos(f)**2
+        N = self.__Np(f)
+        sigm =self.__sigma(f)
+        xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
+        ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
+        x92 = xgk * m0 - 5300000
+        y92 = ygk * m0 + 500000
+        return(x92,y92) #,xgk,ygk)
+    
 if __name__=='__main__':
     proba1 = Transformacje('-52 34 28.9', 15, 130)
     proba2 = Transformacje('-52 34 28.9', 40, 130)
     print(proba1.fl2PL2000())
     print(proba2.fl2PL2000())
+    proba= Transformacje(13, 11, 130)
+    print(proba.fl2PL1992())
