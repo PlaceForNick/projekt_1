@@ -4,17 +4,17 @@ import os
 
 os.system("")
 
-class style():
-    BLACK = '\033[30m'
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-    WHITE = '\033[37m'
-    UNDERLINE = '\033[4m'
-    RESET = '\033[0m'
+class Style():
+    Black = '\033[30m'
+    Red = '\033[31m'
+    Green = '\033[32m'
+    Yellow = '\033[33m'
+    Blue = '\033[34m'
+    Magenta = '\033[35m'
+    Cyan = '\033[36m'
+    White = '\033[37m'
+    Underline = '\033[4m'
+    Reset = '\033[0m'
     
 class NieprawidlowaWartosc(Exception):
     '''Bład oznaczający podanie niepoprawnej lub/i nieobsługiwanej przez program wartości.
@@ -107,8 +107,8 @@ class Transformacje:
             else:
                 raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
         except NieprawidlowaWartosc as nw:
-            print(style.RED + 'NieprawidlowaWartosc: ' + style.RESET)
-            print(f'podana wartość l znajduje się poza zakresem stref odwzorowawcych układu współrzędnych PL2000. '
+            print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
+                  f'podana wartość l znajduje się poza zakresem stref odwzorowawcych układu współrzędnych PL2000. '
                   f'Obsługiwany zakres to {nw.minimum}° - {nw.maksimum}° '
                   f'Podana przez Ciebie wartość to {nw.liczba}')
         else:         
