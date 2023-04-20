@@ -35,7 +35,9 @@ class NieprawidlowaWartosc(Exception):
 
 class Transformacje():
         
-    def __init__(self, X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
+    def __init__(self, X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = '', model=''):
+        
+        
         self.X = X
         self.Y = Y
         self.Z = Z
@@ -44,9 +46,22 @@ class Transformacje():
         self.Y2 = Y2
         self.Z2 = Z2
         self.s = s
-        
-        self.a = 6378137.000
-        self.e2 = 0.00669438002290
+    
+        if   model  == 'kra':
+            self.a= 6378245
+            self.b= 6356863.01877
+        elif  model == "wgs84":
+             self.a = 6378137.0 
+             self.b = 6356752.31424518 
+        elif  model == "grs80":
+             self.a = 6378137.0
+             self.b = 6356752.31414036
+        else:
+             raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsługiwany")
+        self.splasz = (self.a - self.b) / self.a
+        self.e2 = (2 * self.splasz - self.splasz ** 2)
+        print(model,self.b)  
+            
         
         if f =='':
             self.f = f
@@ -255,7 +270,8 @@ if __name__=='__main__':
                            z=90,
                            X=3782450,
                            Y=1085030,
-                           Z=5003140)
+                           Z=5003140,
+                           model='grs80')
     
     print('flh2xyz\n', proba1.flh2xyz())
     print('PL1992\n', proba1.fl2PL1992())
