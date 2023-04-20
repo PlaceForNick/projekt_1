@@ -142,9 +142,9 @@ class Transformacje:
         x92 = xgk * m0 - 5300000
         y92 = ygk * m0 + 500000
         return(x92,y92) #,xgk,ygk)
-    
+       
 if __name__=='__main__':
-    proba1 = Transformacje('-52 34 28.9', 15, 130)
+    proba1 = Transformacje('-52 34 28.9', 15, 130, 100, 100, 100)
     proba2 = Transformacje('-52 34 28.9', 40, 130)
     print(proba1.fl2PL2000())
     print(proba2.fl2PL2000())
