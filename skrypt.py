@@ -246,6 +246,7 @@ class Transformacje():
             dX = [self.X2, self.Y2, self.Z2]
 
         R = self.__Rneu(f, l)
+        print(R)
         return(R.T @ dX)
         
     def flh2xyz(self):
@@ -279,6 +280,18 @@ if __name__=='__main__':
     print('NEU\n', proba1.xyz2neu())
     print('HIRVONEN\n', proba1.xyz2flh())
 
-# xyz2NEU liczy nie wiadomo co
-# fl2PL2000 wybiera sb zle strefy odwzorowawcze
-# reszta liczy ok
+    # proba2 = Transformacje(f='52 0 5.72012',
+    #                        l='16 0 21.66234',
+    #                        h=289.08952781930566,
+    #                        s=43000.0,
+    #                        alfa=230,
+    #                        z=90,
+    #                        X=[3782450, 3782450],
+    #                        Y=[1085030, 1085030],
+    #                        Z=[5003140, 5003140])
+    
+    # print('flh2xyz\n', proba2.flh2xyz())
+    # print('PL1992\n', proba2.fl2PL1992())
+    # print('PL2000\n', proba2.fl2PL2000())
+    # print('NEU\n', proba2.xyz2neu())
+    # print('HIRVONEN\n', proba2.xyz2flh())
