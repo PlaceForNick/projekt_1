@@ -34,10 +34,7 @@ class NieprawidlowaWartosc(Exception):
 
 
 class Transformacje():
-    
-    # a = 6378137.000
-    # e2 = 0.00669438002290
-    
+        
     def __init__(self, X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         self.X = X
         self.Y = Y
@@ -52,28 +49,28 @@ class Transformacje():
         self.e2 = 0.00669438002290
         
         if f =='':
-            pass
+            self.f = f
         elif type(f) == str:
             self.f = self.__fromdms(f)
         else:
             self.f = radians(f)
             
         if l =='':
-            pass
+            self.l = l
         elif type(l) == str:
             self.l = self.__fromdms(l)
         else:
             self.l = radians(l)
                     
         if alfa =='':
-            pass
+            self.alfa = alfa
         elif type(alfa) == str:
             self.alfa = self.__fromdms(alfa)
         else:
             self.alfa = radians(alfa)
             
         if z =='':
-            pass
+            self.z = z
         elif type(z) == str:
             self.z =self.__fromdms(z)
         else:
@@ -113,9 +110,11 @@ class Transformacje():
         N = self.__Np(f)
         h = (p / np.cos(f)) - N
         l = np.arctan2(Y, X)
-        f = self.__dms(f)
-        l = self.__dms(l)
-        return(f, l, h)
+        self.f = f
+        self.l = l
+        f_st = self.__dms(f)
+        l_st = self.__dms(l)
+        return(f_st, l_st, h)
      
     def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
         znak = ' '
@@ -145,8 +144,10 @@ class Transformacje():
         return(sigma)
        
     def fl2PL2000(self,m0= 0.999923):
-        f = self.f
-        l = self.l
+        if self.f =='' or self.l =='':
+            self.xyz2flh()
+        f=self.f
+        l=self.l
         a = self.a
         e2 = self.e2
         try:
@@ -186,6 +187,8 @@ class Transformacje():
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         a=self.a
         e2=self.e2
+        if self.f =='' or self.l =='':
+            self.xyz2flh()
         f=self.f
         l=self.l
         b2 = a**2*(1 - e2)
@@ -217,16 +220,18 @@ class Transformacje():
         return(R)
         
     def xyz2neu(self):
+        if self.f =='' or self.l =='':
+            self.xyz2flh()
         f=self.f
         l=self.l
-        try:        
-            dX = [self.X2, self.Y2, self.Z2]
-            R = self.__Rneu(f, l)
-            return(R.T @ dX)
-        except:
+            
+        if self.X2 =='' or self.Y2 =='' or self.Z2 =='':  
             dX = self.__saz2neu()
-            R = self.__Rneu(f, l)
-            return(R.T @ dX)
+        else:
+            dX = [self.X2, self.Y2, self.Z2]
+
+        R = self.__Rneu(f, l)
+        return(R.T @ dX)
         
     def flh2xyz(self):
         f=self.f
@@ -258,6 +263,6 @@ if __name__=='__main__':
     print('NEU\n', proba1.xyz2neu())
     print('HIRVONEN\n', proba1.xyz2flh())
 
-#xyz2NEU liczy nie wiadomo co
-#fl2PL2000 wybiera sb zle strefy odwzorowawcze
-#reszta liczy ok
+# xyz2NEU liczy nie wiadomo co
+# fl2PL2000 wybiera sb zle strefy odwzorowawcze
+# reszta liczy ok
