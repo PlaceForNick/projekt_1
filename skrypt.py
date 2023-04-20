@@ -95,7 +95,7 @@ class Transformacje():
         Y = float(f'{Y:7.5f}')
         return(Z)# Z to wartosc w [rad]
         
-    def xyz2flh(self): #HIRVONEN
+    def xyz2flh(self):
         X = self.X 
         Y = self.Y
         Z = self.Z
