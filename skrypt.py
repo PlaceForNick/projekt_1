@@ -1,97 +1,5 @@
 import numpy as np
 from math import *
-
-
-
-
-class Transformacje():
-    
-    # a = 6378137.000
-    # e2 = 0.00669438002290
-    
-    def __init__(self, podany_X, podany_Y, podany_Z, podane_f ='', podane_l ='', podane_h = 'wartosc domyslna', podane_X2 = 'BRAK', podane_Y2 = 'BRAK', podane_Z2 = 'BRAK', podane_s = 'BRAK', podane_alfa = 'BRAK', podane_z = 'BRAK'): #self - parametr, ktory reprezentuje obiekt sam w sobie
-        self.X = 'Brak'
-        self.Y = 'Brak'
-        self.Z = 'Brak'
-        self.a = 6378137.000
-        self.e2 = 0.00669438002290
-        if type(podane_f) == str:
-            self.f = self.__fromdms(podane_f)
-        else:
-            self.f = radians(podane_f)
-        if type(podane_l) == str:
-            self.l = self.__fromdms(podane_l)
-        else:
-            self.l = radians(podane_l)
-            
-        self.h = podane_h
-        self.X2 = podane_X2
-        self.Y2 = podane_Y2
-        self.Z2 = podane_Z2
-        self.s = podane_s
-        try:
-            self.alfa = radians(podane_alfa)
-            self.z = radians(podane_z)
-        except TypeError:
-            pass
-        # print(a)
-    # @classmethod
-    
-    # def Np(self, f): #promien krzywizny w I wertykale
-    #     a = self.a 
-    #     e2 = self.e2 
-    #     N = a / np.sqrt(1 - e2 * np.sin(f)**2)
-    #     return(N) 
-
-
-    
-    def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
-        znak = 1
-        if X[0] == '-':
-             znak = -1
-        Y = X.split(' ' or '"' or "'" or '°' or '-')
-        d = int(Y[0])
-        m = int(Y[1])
-        s = float(Y[2])
-        s = s/3600
-        m = m/60
-        Y = znak*(d+m+s)
-        Z = Y * pi/180
-        Y = float(f'{Y:7.5f}')
-        return(Z)# Z to wartosc w [rad]
-    
-
-    
-    
-    def xyz2flh(self): #HIRVONEN
-        X = self.X 
-        Y = self.Y
-        Z = self.Z
-        a = self.a 
-        e2 = self.e2 
-        p = np.sqrt(X**2 + Y**2)
-        f = np.arctan(Z/(p * (1 - e2)))
-        while True:
-            # N = Np(self, f)
-            N = a / np.sqrt(1 - e2 * np.sin(f)**2)
-            h = (p / np.cos(f)) - N
-            fp = f
-            f = np.arctan(Z / (p * (1 - e2 * N / (N + h))))
-            if abs(fp - f) < (0.000001/206265):
-                break
-        # N = Np(self, f)
-        N = a / np.sqrt(1 - e2 * np.sin(f)**2)
-        h = (p / np.cos(f)) - N
-        l = np.arctan2(Y, X)
-        return(f, l, h)
-        # return(self.X)
-     
-    
-    
-if __name__ == '__main__':
-            test = Transformacje(100, 200, 300)
-            print(test.xyz2flh())
-
 import os
 
 os.system("")
@@ -120,28 +28,58 @@ class NieprawidlowaWartosc(Exception):
         self.liczba = liczba
         self.minimum  = minimum
         self.maksimum = maksimum
-   
 
 
+
+
+
+class Transformacje():
     
-
-   
-
-
+    # a = 6378137.000
+    # e2 = 0.00669438002290
+    
+    def __init__(self, X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
+        self.X = X
+        self.Y = Y
+        self.Z = Z
+        self.h = h
+        self.X2 = X2
+        self.Y2 = Y2
+        self.Z2 = Z2
+        self.s = s
         
+        self.a = 6378137.000
+        self.e2 = 0.00669438002290
+        
+        if f =='':
+            pass
+        elif type(f) == str:
+            self.f = self.__fromdms(f)
+        else:
+            self.f = radians(f)
+            
+        if l =='':
+            pass
+        elif type(l) == str:
+            self.l = self.__fromdms(l)
+        else:
+            self.l = radians(l)
+                    
+        if alfa =='':
+            pass
+        elif type(alfa) == str:
+            self.alfa = self.__fromdms(alfa)
+        else:
+            self.alfa = radians(alfa)
+            
+        if z =='':
+            pass
+        elif type(z) == str:
+            self.z =self.__fromdms(z)
+        else:
+            self.z = radians(z)
 
-    
-    def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
-        znak = ' '
-        if x < 0:
-            znak = '-'
-            x = abs(x)
-        x = x * 180/pi
-        d = int(x)
-        m = int((x - d) *  60)
-        s = (x - d - (m/60)) * 3600
-        return(f"{znak}{d:3d}°{m:2d}'{s:8.5f}''")
-
+     
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         znak = 1
         if X[0] == '-':
@@ -156,17 +94,45 @@ class NieprawidlowaWartosc(Exception):
         Z = Y * pi/180
         Y = float(f'{Y:7.5f}')
         return(Z)# Z to wartosc w [rad]
-
+        
+    def xyz2flh(self): #HIRVONEN
+        X = self.X 
+        Y = self.Y
+        Z = self.Z
+        a = self.a 
+        e2 = self.e2 
+        p = np.sqrt(X**2 + Y**2)
+        f = np.arctan(Z/(p * (1 - e2)))
+        while True:
+            N = self.__Np(f)
+            h = (p / np.cos(f)) - N
+            fp = f
+            f = np.arctan(Z / (p * (1 - e2 * N / (N + h))))
+            if abs(fp - f) < (0.000001/206265):
+                break
+        N = self.__Np(f)
+        h = (p / np.cos(f)) - N
+        l = np.arctan2(Y, X)
+        f = self.__dms(f)
+        l = self.__dms(l)
+        return(f, l, h)
+     
+    def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
+        znak = ' '
+        if x < 0:
+            znak = '-'
+            x = abs(x)
+        x = x * 180/pi
+        d = int(x)
+        m = int((x - d) *  60)
+        s = (x - d - (m/60)) * 3600
+        return(f"{znak}{d:3d}°{m:2d}'{s:8.5f}''")
 
     def __Np(self, f): #promien krzywizny w I wertykale
-
-    
-
         a = self.a 
         e2 = self.e2 
         N = a / np.sqrt(1 - e2 * np.sin(f)**2)
         return(N)
-
 
     def __sigma(self,f):
         a = self.a 
@@ -215,7 +181,7 @@ class NieprawidlowaWartosc(Exception):
             ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
             x2000 = xgk * m0
             y2000 = ygk * m0 + ns * 1000000 + 500000
-            return(x2000,y2000) #,xgk,ygk)
+            return(x2000,y2000)
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         a=self.a
@@ -233,12 +199,8 @@ class NieprawidlowaWartosc(Exception):
         ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
         x92 = xgk * m0 - 5300000
         y92 = ygk * m0 + 500000
-        return(x92,y92) #,xgk,ygk)
-       
-
-
-
-       
+        return(x92,y92)
+      
     def __saz2neu(self):
         s = self.s
         alfa = self.alfa
@@ -265,37 +227,37 @@ class NieprawidlowaWartosc(Exception):
             dX = self.__saz2neu()
             R = self.__Rneu(f, l)
             return(R.T @ dX)
-    
-
-
         
     def flh2xyz(self):
-        f=self.f_rad
-        l=self.l_rad
+        f=self.f
+        l=self.l
         h=self.h
         a=self.a
         e2=self.e2
-        N = self.Np(f)
+        N = self.__Np(f)
         x = (N+h)*np.cos(f)*np.cos(l)
         y = (N+h)*np.cos(f)*np.sin(l)
         z = ((N*(1-e2)+h))*np.sin(f)
-        return x,y,z 
-
-
-if __name__=='__main__':
-    proba= Transformacje(13, 11, 130, 6378137, 0.00669438002290)
-    print(proba.flh2xyz())
-
-
-if __name__ == '__main__':
-            test = Transformacje(100, 200, 300)
-            print(test.xyz2flh())
+        return(x,y,z)
 
 if __name__=='__main__':
-    proba1 = Transformacje('-52 34 28.9', 15, podane_h=130, podane_s = 100, podane_alfa= 45, podane_z= 25)
-    print(proba1.xyz2neu())
-    proba2 = Transformacje('-52 34 28.9', 15, podane_h=130, podane_X2 = 100, podane_Y2= 100, podane_Z2= 100)
-    print(proba2.xyz2neu())
+    
+    proba1 = Transformacje(f='52 0 5.72012',
+                           l='16 0 21.66234',
+                           h=289.08952781930566,
+                           s=43000.0,
+                           alfa=230,
+                           z=90,
+                           X=3782450,
+                           Y=1085030,
+                           Z=5003140)
+    
+    print('flh2xyz\n', proba1.flh2xyz())
+    print('PL1992\n', proba1.fl2PL1992())
+    print('PL2000\n', proba1.fl2PL2000())
+    print('NEU\n', proba1.xyz2neu())
+    print('HIRVONEN\n', proba1.xyz2flh())
 
-
-
+#xyz2NEU liczy nie wiadomo co
+#fl2PL2000 wybiera sb zle strefy odwzorowawcze
+#reszta liczy ok
