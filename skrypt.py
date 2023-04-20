@@ -3,6 +3,7 @@ from math import *
 
 
 
+
 class Transformacje():
     
     # a = 6378137.000
@@ -41,6 +42,8 @@ class Transformacje():
     #     e2 = self.e2 
     #     N = a / np.sqrt(1 - e2 * np.sin(f)**2)
     #     return(N) 
+
+
     
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         znak = 1
@@ -57,6 +60,7 @@ class Transformacje():
         Y = float(f'{Y:7.5f}')
         return(Z)# Z to wartosc w [rad]
     
+
     
     
     def xyz2flh(self): #HIRVONEN
@@ -155,10 +159,14 @@ class NieprawidlowaWartosc(Exception):
 
 
     def __Np(self, f): #promien krzywizny w I wertykale
+
+    
+
         a = self.a 
         e2 = self.e2 
         N = a / np.sqrt(1 - e2 * np.sin(f)**2)
         return(N)
+
 
     def __sigma(self,f):
         a = self.a 
@@ -227,13 +235,7 @@ class NieprawidlowaWartosc(Exception):
         y92 = ygk * m0 + 500000
         return(x92,y92) #,xgk,ygk)
        
-if __name__=='__main__':
-    proba1 = Transformacje('-52 34 28.9', 15, 130)
-    proba2 = Transformacje('-52 34 28.9', 40, 130)
-    print(proba1.fl2PL2000())
-    print(proba2.fl2PL2000())
-    proba= Transformacje(13, 11, 130)
-    print(proba.fl2PL1992())
+
 
 
        
@@ -264,9 +266,36 @@ if __name__=='__main__':
             R = self.__Rneu(f, l)
             return(R.T @ dX)
     
+
+
+        
+    def flh2xyz(self):
+        f=self.f_rad
+        l=self.l_rad
+        h=self.h
+        a=self.a
+        e2=self.e2
+        N = self.Np(f)
+        x = (N+h)*np.cos(f)*np.cos(l)
+        y = (N+h)*np.cos(f)*np.sin(l)
+        z = ((N*(1-e2)+h))*np.sin(f)
+        return x,y,z 
+
+
+if __name__=='__main__':
+    proba= Transformacje(13, 11, 130, 6378137, 0.00669438002290)
+    print(proba.flh2xyz())
+
+
+if __name__ == '__main__':
+            test = Transformacje(100, 200, 300)
+            print(test.xyz2flh())
+
 if __name__=='__main__':
     proba1 = Transformacje('-52 34 28.9', 15, podane_h=130, podane_s = 100, podane_alfa= 45, podane_z= 25)
     print(proba1.xyz2neu())
     proba2 = Transformacje('-52 34 28.9', 15, podane_h=130, podane_X2 = 100, podane_Y2= 100, podane_Z2= 100)
     print(proba2.xyz2neu())
+
+
 
