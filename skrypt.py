@@ -35,7 +35,7 @@ class NieprawidlowaWartosc(Exception):
 
 class Transformacje():
         
-    def __init__(self, model, X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
+    def __init__(self, model, zapis = False, nazwa = 'output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         
         if   model  == 'kra':
             self.a= 6378245
@@ -51,6 +51,18 @@ class Transformacje():
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         # print(model,self.b)
+        
+        if zapis == True:
+            self.zapis = zapis
+            self.nazwa = nazwa + '.txt'
+            self.plik = open(self.nazwa, 'w')
+            self.plik.close()
+        elif zapis == False:
+            self.zapis = zapis
+        else:
+            raise NotImplementedError(f'Podana przez Ciebie wartość zapis "{zapis}" jest nieprawidłowa. Wybierz jedna z podanych ponizej wartosci:'
+                                      '- False'
+                                      '- True')
         
         self.X = []
         self.Y = []
@@ -245,7 +257,18 @@ class Transformacje():
         self.f = f_ost
         self.l = l_ost
         self.h = h_ost
-
+        
+        if self.zapis == True:
+            self.plik = open(self.nazwa, 'a')
+            self.plik.write('--------------------------------------------------\n')
+            self.plik.write("f [° ' '']         l [° ' '']         h [m]\n")
+            self.plik.write('--------------------------------------------------\n')
+            i = 0
+            while i < len(f_st):
+                self.plik.write(f'{f_st[i]} {l_st[i]} {h_ost[i]:10.3f}\n')
+                i += 1
+            self.plik.close()
+        
         return(f_st, l_st, h_ost)
      
     def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
@@ -347,7 +370,18 @@ class Transformacje():
                 x_ost.append(x2000)
                 y_ost.append(y2000)
                 i += 1
-                
+        
+        if self.zapis == True:
+            self.plik = open(self.nazwa, 'a')
+            self.plik.write('--------------------------------------------------\n')
+            self.plik.write("x 2000 [m]         y 2000 [m]\n")
+            self.plik.write('--------------------------------------------------\n')
+            i = 0
+            while i < len(x_ost):
+                self.plik.write(f'{x_ost[i]:10.3f} {y_ost[i]:10.3f}\n')
+                i += 1
+            self.plik.close()
+            
         return(x_ost,y_ost)
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
@@ -397,7 +431,18 @@ class Transformacje():
             x_ost.append(x1992)
             y_ost.append(y1992)
             i += 1
-                
+        
+        if self.zapis == True:
+            self.plik = open(self.nazwa, 'a')
+            self.plik.write('--------------------------------------------------\n')
+            self.plik.write("x 1992 [m]         y 1992 [m]\n")
+            self.plik.write('--------------------------------------------------\n')
+            i = 0
+            while i < len(x_ost):
+                self.plik.write(f'{x_ost[i]:10.3f} {y_ost[i]:10.3f}\n')
+                i += 1
+            self.plik.close()
+            
         return(x_ost,y_ost)
       
     def __saz2neu(self):
@@ -457,6 +502,18 @@ class Transformacje():
             
             NEU_ost.append(NEU)
             i += 1
+        
+        if self.zapis == True:
+            self.plik = open(self.nazwa, 'a')
+            self.plik.write('--------------------------------------------------\n')
+            self.plik.write("N [m]              E [m]              U [m]\n")
+            self.plik.write('--------------------------------------------------\n')
+            i = 0
+            while i < (len(NEU))/3:
+                print(NEU[0][i])
+                self.plik.write(f'{NEU[0][i]:10.3f} {NEU[1][i]:10.3f} {NEU[2][i]:10.3f}\n')
+                i += 1
+            self.plik.close()
             
         return(NEU)
         
@@ -499,6 +556,17 @@ class Transformacje():
             y_ost.append(y)
             z_ost.append(z)
             i += 1
+        
+        if self.zapis == True:
+            self.plik = open(self.nazwa, 'a')
+            self.plik.write('--------------------------------------------------\n')
+            self.plik.write("X [m]              Y [m]              Z [m]\n")
+            self.plik.write('--------------------------------------------------\n')
+            i = 0
+            while i < len(x_ost):
+                self.plik.write(f'{x_ost[i]:10.3f} {y_ost[i]:10.3f} {z_ost[i]:10.3f}\n')
+                i += 1
+            self.plik.close()
             
         return(x_ost, y_ost, z_ost)
     
@@ -513,6 +581,7 @@ class Transformacje():
                 (self.X).append(j[nr + 0])
                 (self.Y).append(j[nr + 1])
                 (self.Z).append(j[nr + 2])
+                print(self.X)
                 
         elif typ == 'XYZ2':
             self.X2 = []
@@ -531,6 +600,7 @@ class Transformacje():
                 (self.f).append(j[nr + 0])
                 (self.l).append(j[nr + 1])
                 (self.h).append(j[nr + 2])
+                print(self.f)
                 
         elif typ == 'saz':
             self.s = []
@@ -547,7 +617,6 @@ class Transformacje():
                                       '- XYZ2\n'
                                       '- flh\n'
                                       '- saz\n')
-
     
 if __name__=='__main__':
     
@@ -560,7 +629,8 @@ if __name__=='__main__':
                            X=3782450,
                            Y=1085030,
                            Z=5003140,
-                           model='grs80')
+                           model='grs80',
+                           zapis=True)
     
     print('\nflh2xyz\n', proba1.flh2xyz())
     print('\nPL1992\n', proba1.fl2PL1992())
@@ -585,10 +655,13 @@ if __name__=='__main__':
     # print('\nNEU\n', proba2.xyz2neu())
     # print('\nHIRVONEN\n', proba2.xyz2flh())
     
-    proba3 = Transformacje(model='kra')
+    proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
     proba3.wczytajplik('test.txt', 'XYZ')
-    proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    proba3.xyz2flh()
+    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    # proba3.xyz2flh()
+    # print('\nflh2xyz\n', proba3.flh2xyz())
     print('\nPL1992\n', proba3.fl2PL1992())
+    print('\nPL2000\n', proba3.fl2PL2000())
+    # print('\nNEU\n', proba3.xyz2neu())
     print('\nHIRVONEN\n', proba3.xyz2flh())
    
