@@ -571,9 +571,9 @@ class Transformacje():
         return(x_ost, y_ost, z_ost)
     
     def wczytajplik(self, plik, typ, nr = 0):
-        dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
         
         if typ == 'XYZ':
+            dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
             self.X = []
             self.Y = []
             self.Z = []
@@ -581,9 +581,9 @@ class Transformacje():
                 (self.X).append(j[nr + 0])
                 (self.Y).append(j[nr + 1])
                 (self.Z).append(j[nr + 2])
-                print(self.X)
                 
         elif typ == 'XYZ2':
+            dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
             self.X2 = []
             self.Y2 = []
             self.Z2 = []
@@ -591,25 +591,70 @@ class Transformacje():
                 (self.X2).append(j[nr + 0])
                 (self.Y2).append(j[nr + 1])
                 (self.Z2).append(j[nr + 2])
+            
                 
         elif typ == 'flh':
+            dane = np.genfromtxt(plik, delimiter=',', dtype=str)#, skip_header = 4)
             self.f = []
             self.l = []
             self.h = []
             for i, j in enumerate(dane):
-                (self.f).append(j[nr + 0])
-                (self.l).append(j[nr + 1])
-                (self.h).append(j[nr + 2])
-                print(self.f)
+                i = 0
+                for x in j[nr + 0]:
+                    if x ==' ':
+                        j[nr + 0] = (j[nr + 0])[i:]
+                        i += 1
+                    else:
+                        break
+                i = 0
+                for x in j[nr + 1]:
+                    if x ==' ':
+                        j[nr + 1] = (j[nr + 1])[i:]
+                        i += 1
+                    else:
+                        break
+                try:
+                    x = float(j[nr + 0])
+                    (self.f).append(np.radians(x)) 
+                except ValueError:
+                    (self.f).append(self.__fromdms(j[nr + 0]))
+                try:
+                    x = float(j[nr + 1])
+                    (self.l).append(np.radians(x))
+                except ValueError:
+                    (self.l).append(self.__fromdms(j[nr + 1]))
+                (self.h).append(float(j[nr + 2]))
                 
         elif typ == 'saz':
+            dane = np.genfromtxt(plik, delimiter=',', dtype=str)#, skip_header = 4)
             self.s = []
             self.alfa = []
             self.z = []
             for i, j in enumerate(dane):
-                (self.s).append(j[nr + 0])
-                (self.alfa).append(j[nr + 1])
-                (self.z).append(j[nr + 2])
+                for x in j[nr + 1]:
+                    if x ==' ':
+                        j[nr + 1] = (j[nr + 1])[i:]
+                        i += 1
+                    else:
+                        break
+                i = 0
+                for x in j[nr + 2]:
+                    if x ==' ':
+                        j[nr + 2] = (j[nr + 2])[i:]
+                        i += 1
+                    else:
+                        break
+                (self.s).append(float(j[nr + 0]))
+                try:
+                    x = float(j[nr + 1])
+                    (self.alfa).append(np.radians(x))  
+                except ValueError:
+                    (self.alfa).append(self.__fromdms(j[nr + 1]))
+                try:
+                    x = float(j[nr + 2])
+                    (self.z).append(np.radians(x))           
+                except ValueError:
+                    (self.z).append(self.__fromdms(j[nr + 2]))
         
         else:
             raise NotImplementedError(f'Podany przez Ciebie typ danych "{typ}" jest nieporawny. Wybierz jedna z podanych ponizej wartosci:\n'
@@ -639,15 +684,15 @@ if __name__=='__main__':
     print('\nHIRVONEN\n', proba1.xyz2flh())
 
     # proba2 = Transformacje(f='52 0 5.72012',
-    #                        l='16 0 21.66234',
-    #                        h=289.08952781930566,
-    #                        s=43000.0,
-    #                        alfa=230,
-    #                        z=90,
-    #                        X=[3782450, 3782450],
-    #                        Y=[1085030, 1085030],
-    #                        Z=[5003140, 5003140],
-    #                        model='grs80')
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=[3782450, 3782450],
+    #                         Y=[1085030, 1085030],
+    #                         Z=[5003140, 5003140],
+    #                         model='grs80')
     
     # print('\nflh2xyz\n', proba2.flh2xyz())
     # print('\nPL1992\n', proba2.fl2PL1992())
@@ -656,12 +701,13 @@ if __name__=='__main__':
     # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
-    proba3.wczytajplik('test.txt', 'XYZ')
-    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    # proba3.xyz2flh()
-    # print('\nflh2xyz\n', proba3.flh2xyz())
+    # proba3.wczytajplik('test.txt', 'XYZ')
+    proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    proba3.wczytajplik('test.txt', 'saz', nr = 6)
+
+    print('\nflh2xyz\n', proba3.flh2xyz())
     print('\nPL1992\n', proba3.fl2PL1992())
     print('\nPL2000\n', proba3.fl2PL2000())
-    # print('\nNEU\n', proba3.xyz2neu())
-    print('\nHIRVONEN\n', proba3.xyz2flh())
+    print('\nNEU\n', proba3.xyz2neu())
+    # print('\nHIRVONEN\n', proba3.xyz2flh())
    
