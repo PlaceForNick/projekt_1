@@ -40,21 +40,28 @@ class Transformacje():
         self.X = []
         self.Y = []
         self.Z = []
+        self.f = []
+        self.l = []
         self.h = []
         self.X2 = []
         self.Y2 = []
         self.Z2 = []
         self.s = []
+        self.alfa = []
+        self.z = []
         
         (self.X).append(X)
         (self.Y).append(Y)
         (self.Z).append(Z)
+        (self.f).append(f)
+        (self.l).append(l)
         (self.h).append(h)
         (self.X2).append(X2)
         (self.Y2).append(Y2)
         (self.Z2).append(Z2)
         (self.s).append(s)
-
+        (self.alfa).append(alfa)
+        (self.z).append(z)
         
         if   model  == 'kra':
             self.a= 6378245
@@ -70,36 +77,82 @@ class Transformacje():
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         print(model,self.b)  
-            
         
-        if f =='':
-            self.f = f
-        elif type(f) == str:
-            self.f = self.__fromdms(f)
-        else:
-            self.f = radians(f)
-            
-        if l =='':
-            self.l = l
-        elif type(l) == str:
-            self.l = self.__fromdms(l)
-        else:
-            self.l = radians(l)
-                    
-        if alfa =='':
-            self.alfa = alfa
-        elif type(alfa) == str:
-            self.alfa = self.__fromdms(alfa)
-        else:
-            self.alfa = radians(alfa)
-            
-        if z =='':
-            self.z = z
-        elif type(z) == str:
-            self.z =self.__fromdms(z)
-        else:
-            self.z = radians(z)
-
+        f_ost = []
+        i = 0  
+        while True:
+            try:
+                f = self.f[i]
+                if f =='':
+                    f = f
+                elif type(f) == str:
+                    f = self.__fromdms(f)
+                else:
+                    f = radians(f)
+                f_ost.append(f)
+                i += 1
+            except IndexError:
+                break
+            except TypeError:
+                break
+        self.f = f_ost
+        
+        l_ost = []
+        i = 0     
+        while True:
+            try:
+                l = self.l[i]
+                if l =='':
+                    l = l
+                elif type(l) == str:
+                    l = self.__fromdms(l)
+                else:
+                    l = radians(l)
+                l_ost.append(l)
+                i += 1
+            except IndexError:
+                break
+            except TypeError:
+                break
+        self.l = l_ost
+        
+        alfa_ost = []
+        i = 0     
+        while True:
+            try:
+                alfa = self.alfa[i]           
+                if alfa =='':
+                    alfa = alfa
+                elif type(alfa) == str:
+                    alfa = self.__fromdms(alfa)
+                else:
+                    alfa = radians(alfa)
+                alfa_ost.append(alfa)
+                i += 1
+            except IndexError:
+                break
+            except TypeError:
+                break                
+        self.alfa = alfa_ost
+        
+        z_ost = []
+        i = 0     
+        while True:
+            try:
+                z = self.z[i]
+                if z =='':
+                    z = z
+                elif type(z) == str:
+                    z =self.__fromdms(z)
+                else:
+                    z = radians(z)
+                z_ost.append(z)
+                i += 1
+            except IndexError:
+                break
+            except TypeError:
+                break
+        self.z = z_ost
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
@@ -409,7 +462,6 @@ class Transformacje():
         dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
         
         if typ == 'XYZ':
-            # self.X, self.Y, self.Z = (j[0], j[1], j[2])
             self.X = []
             self.Y = []
             self.Z = []
@@ -417,13 +469,7 @@ class Transformacje():
                 (self.X).append(j[0])
                 (self.Y).append(j[1])
                 (self.Z).append(j[2])
-            # print(self.X, self.Y, self.Z)
-            # if typ == 'flh':
-            #     self.f, self.l, self.h = (j[0], j[1], j[2])
-            # if typ == 'saz':
-            #     self.s, self.alfa, self.a = (j[0], j[1], j[2])
-            # if typ == 'XYZ2':
-            #     self.X2, self.Y2, self.Z2 = (j[0], j[1], j[2])
+
 
  
 
@@ -431,21 +477,21 @@ class Transformacje():
 if __name__=='__main__':
     
     proba1 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=3782450,
-                            Y=1085030,
-                            Z=5003140,
-                            model='grs80')
+                           l='16 0 21.66234',
+                           h=289.08952781930566,
+                           s=43000.0,
+                           alfa=230,
+                           z=90,
+                           X=3782450,
+                           Y=1085030,
+                           Z=5003140,
+                           model='grs80')
     
-    print('flh2xyz\n', proba1.flh2xyz())
-    # print('PL1992\n', proba1.fl2PL1992())
-    # print('PL2000\n', proba1.fl2PL2000())
-    # print('NEU\n', proba1.xyz2neu())
-    # print('HIRVONEN\n', proba1.xyz2flh())
+    print('\nflh2xyz\n', proba1.flh2xyz())
+    # print('\nPL1992\n', proba1.fl2PL1992())
+    # print('\nPL2000\n', proba1.fl2PL2000())
+    # print('\nNEU\n', proba1.xyz2neu())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
     # proba2 = Transformacje(f='52 0 5.72012',
     #                         l='16 0 21.66234',
