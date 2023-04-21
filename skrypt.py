@@ -37,6 +37,21 @@ class Transformacje():
         
     def __init__(self, model, X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         
+        if   model  == 'kra':
+            self.a= 6378245
+            self.b= 6356863.01877
+        elif  model == "wgs84":
+            self.a = 6378137.0 
+            self.b = 6356752.31424518 
+        elif  model == "grs80":
+            self.a = 6378137.0
+            self.b = 6356752.31414036
+        else:
+            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsługiwany")
+        self.splasz = (self.a - self.b) / self.a
+        self.e2 = (2 * self.splasz - self.splasz ** 2)
+        # print(model,self.b)
+        
         self.X = []
         self.Y = []
         self.Z = []
@@ -62,22 +77,7 @@ class Transformacje():
         (self.s).append(s)
         (self.alfa).append(alfa)
         (self.z).append(z)
-        
-        if   model  == 'kra':
-            self.a= 6378245
-            self.b= 6356863.01877
-        elif  model == "wgs84":
-            self.a = 6378137.0 
-            self.b = 6356752.31424518 
-        elif  model == "grs80":
-            self.a = 6378137.0
-            self.b = 6356752.31414036
-        else:
-            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsługiwany")
-        self.splasz = (self.a - self.b) / self.a
-        self.e2 = (2 * self.splasz - self.splasz ** 2)
-        print(model,self.b)  
-        
+                
         f_ost = []
         i = 0  
         while True:
@@ -220,7 +220,7 @@ class Transformacje():
         while i < len(self.X):
             X = self.X[i]
             Y = self.Y[i]
-            Z = self.Z[i]
+            Z = self.Z[i] 
             
             p = np.sqrt(X**2 + Y**2)
             f = np.arctan(Z/(p * (1 - e2)))
@@ -245,7 +245,7 @@ class Transformacje():
         self.f = f_ost
         self.l = l_ost
         self.h = h_ost
-        
+
         return(f_st, l_st, h_ost)
      
     def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
@@ -298,48 +298,57 @@ class Transformacje():
         y2000 : TYPE : [float] : współrzędna Y w układzie 2000 [metry]
 
         '''
+        a = self.a 
+        e2 = self.e2 
+        x_ost = []
+        y_ost = []
+        i = 0
+        
+        while i < (len(self.f) or len(self.X)):
 
-        if self.f =='' or self.l =='':
-            self.xyz2flh()
-        f=self.f
-        l=self.l
-        f = self.f
-        l = self.l
-        a = self.a
-        e2 = self.e2
-        try:
-            if l < radians(16.5) and l > radians(13.5): #ns = 5
-                l0 = radians(15)
-                ns = 5
-            elif l < radians(19.5) and l > radians(16.5): #ns = 6
-                l0 = radians(18)
-                ns = 6
-            elif l < radians(22.5) and l > radians(19.5): #ns = 7
-                l0 = radians(21)
-                ns = 7
-            elif l < radians(25.5) and l > radians(22.5): #ns = 8
-                l0 = radians(24)
-                ns = 8
-            else:
-                raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
-        except NieprawidlowaWartosc as nw:
-            print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
-                  f'podana wartość l znajduje się poza zakresem stref odwzorowawcych układu współrzędnych PL2000. '
-                  f'Obsługiwany zakres to {nw.minimum}° - {nw.maksimum}° '
-                  f'Podana przez Ciebie wartość to {nw.liczba}')
-        else:         
-            b2 = a**2*(1 - e2)
-            ep2 = (a**2 - b2)/b2
-            dl = l - l0
-            t = tan(f)
-            n2 = ep2 * cos(f)**2
-            N = self.__Np(f)
-            sigm = self.__sigma(f)
-            xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
-            ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
-            x2000 = xgk * m0
-            y2000 = ygk * m0 + ns * 1000000 + 500000
-            return(x2000,y2000)
+            if self.f == [''] or self.l == ['']:
+                self.xyz2flh()
+            f = self.f[i]
+            l = self.l[i]
+
+            try:
+                if l < radians(16.5) and l > radians(13.5): #ns = 5
+                    l0 = radians(15)
+                    ns = 5
+                elif l < radians(19.5) and l > radians(16.5): #ns = 6
+                    l0 = radians(18)
+                    ns = 6
+                elif l < radians(22.5) and l > radians(19.5): #ns = 7
+                    l0 = radians(21)
+                    ns = 7
+                elif l < radians(25.5) and l > radians(22.5): #ns = 8
+                    l0 = radians(24)
+                    ns = 8
+                else:
+                    raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
+            except NieprawidlowaWartosc as nw:
+                print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
+                      f'podana wartość l znajduje się poza zakresem stref odwzorowawcych układu współrzędnych PL2000. '
+                      f'Obsługiwany zakres to {nw.minimum}° - {nw.maksimum}° '
+                      f'Podana przez Ciebie wartość to {nw.liczba}')
+            else:         
+                b2 = a**2*(1 - e2)
+                ep2 = (a**2 - b2)/b2
+                dl = l - l0
+                t = tan(f)
+                n2 = ep2 * cos(f)**2
+                N = self.__Np(f)
+                sigm = self.__sigma(f)
+                xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
+                ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
+                x2000 = xgk * m0
+                y2000 = ygk * m0 + ns * 1000000 + 500000
+                
+                x_ost.append(x2000)
+                y_ost.append(y2000)
+                i += 1
+                
+        return(x_ost,y_ost)
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
@@ -363,22 +372,33 @@ class Transformacje():
         '''
         a=self.a
         e2=self.e2
-        if self.f =='' or self.l =='':
-            self.xyz2flh()
-        f=self.f
-        l=self.l
-        b2 = a**2*(1 - e2)
-        ep2 = (a**2 - b2)/b2
-        dl = l - l0
-        t = tan(f)
-        n2 = ep2 * cos(f)**2
-        N = self.__Np(f)
-        sigm =self.__sigma(f)
-        xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
-        ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
-        x1992 = xgk * m0 - 5300000
-        y1992 = ygk * m0 + 500000
-        return(x1992,y1992)
+        x_ost = []
+        y_ost = []
+        i = 0
+        
+        while i < (len(self.f) or len(self.X)):
+        
+            if self.f == [''] or self.l == ['']:
+                self.xyz2flh()
+            f = self.f[i]
+            l = self.l[i]
+            b2 = a**2*(1 - e2)
+            ep2 = (a**2 - b2)/b2
+            dl = l - l0
+            t = tan(f)
+            n2 = ep2 * cos(f)**2
+            N = self.__Np(f)
+            sigm =self.__sigma(f)
+            xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
+            ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
+            x1992 = xgk * m0 - 5300000
+            y1992 = ygk * m0 + 500000
+            
+            x_ost.append(x1992)
+            y_ost.append(y1992)
+            i += 1
+                
+        return(x_ost,y_ost)
       
     def __saz2neu(self):
         s = self.s
@@ -413,20 +433,31 @@ class Transformacje():
         NEU: TYPE : LIST 
             Współrzedne topocentryczne (North , East (E), Up (U))'''
 
-        if self.f =='' or self.l =='':
-            self.xyz2flh()
-
-        f=self.f
-        l=self.l
+        a=self.a
+        e2=self.e2
+        NEU_ost = []
+        y_ost = []
+        i = 0
+        
+        while i < (len(self.f) or len(self.X)):
+        
+            if self.f == [''] or self.l == ['']:
+                self.xyz2flh()
+            f = self.f[i]
+            l = self.l[i]
             
-        if self.X2 =='' or self.Y2 =='' or self.Z2 =='':  
-            dX = self.__saz2neu()
-        else:
-            dX = [self.X2, self.Y2, self.Z2]
-
-        R = self.__Rneu(f, l)
-        # print(R)
-        NEU= R.T @ dX
+            if self.X2 == [''] or self.Y2 == [''] or self.Z2 == ['']:  
+                dX = self.__saz2neu()
+            else:
+                dX = [self.X2[i], self.Y2[i], self.Z2[i]]
+    
+            R = self.__Rneu(f, l)
+            # print(R)
+            NEU = R.T @ dX
+            
+            NEU_ost.append(NEU)
+            i += 1
+            
         return(NEU)
         
     def flh2xyz(self):
@@ -447,18 +478,31 @@ class Transformacje():
         Z - współrzędna prostokątna Z punktu [metry] | typ: float
 
         '''
-        f=self.f
-        l=self.l
-        h=self.h
-        a=self.a
-        e2=self.e2
-        N = self.__Np(f)
-        x = (N+h)*np.cos(f)*np.cos(l)
-        y = (N+h)*np.cos(f)*np.sin(l)
-        z = ((N*(1-e2)+h))*np.sin(f)
-        return(x,y,z)
+        a = self.a 
+        e2 = self.e2 
+        x_ost = []
+        y_ost = []
+        z_ost = []
+        i = 0
+        
+        while i < len(self.f):
+            f = self.f[i]
+            l = self.l[i]
+            h = self.h[i]
+
+            N = self.__Np(f)
+            x = (N+h)*np.cos(f)*np.cos(l)
+            y = (N+h)*np.cos(f)*np.sin(l)
+            z = ((N*(1-e2)+h))*np.sin(f)
+            
+            x_ost.append(x)
+            y_ost.append(y)
+            z_ost.append(z)
+            i += 1
+            
+        return(x_ost, y_ost, z_ost)
     
-    def wczytajplik(self, plik, typ):
+    def wczytajplik(self, plik, typ, nr = 0):
         dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
         
         if typ == 'XYZ':
@@ -466,9 +510,9 @@ class Transformacje():
             self.Y = []
             self.Z = []
             for i, j in enumerate(dane):
-                (self.X).append(j[0])
-                (self.Y).append(j[1])
-                (self.Z).append(j[2])
+                (self.X).append(j[nr + 0])
+                (self.Y).append(j[nr + 1])
+                (self.Z).append(j[nr + 2])
 
 
  
@@ -488,30 +532,31 @@ if __name__=='__main__':
                            model='grs80')
     
     print('\nflh2xyz\n', proba1.flh2xyz())
-    # print('\nPL1992\n', proba1.fl2PL1992())
-    # print('\nPL2000\n', proba1.fl2PL2000())
-    # print('\nNEU\n', proba1.xyz2neu())
-    # print('\nHIRVONEN\n', proba1.xyz2flh())
+    print('\nPL1992\n', proba1.fl2PL1992())
+    print('\nPL2000\n', proba1.fl2PL2000())
+    print('\nNEU\n', proba1.xyz2neu())
+    print('\nHIRVONEN\n', proba1.xyz2flh())
 
     # proba2 = Transformacje(f='52 0 5.72012',
-    #                         l='16 0 21.66234',
-    #                         h=289.08952781930566,
-    #                         s=43000.0,
-    #                         alfa=230,
-    #                         z=90,
-    #                         X=[3782450, 3782450],
-    #                         Y=[1085030, 1085030],
-    #                         Z=[5003140, 5003140])
+    #                        l='16 0 21.66234',
+    #                        h=289.08952781930566,
+    #                        s=43000.0,
+    #                        alfa=230,
+    #                        z=90,
+    #                        X=[3782450, 3782450],
+    #                        Y=[1085030, 1085030],
+    #                        Z=[5003140, 5003140],
+    #                        model='grs80')
     
-    # print('flh2xyz\n', proba2.flh2xyz())
-    # print('PL1992\n', proba2.fl2PL1992())
-    # print('PL2000\n', proba2.fl2PL2000())
-    # print('NEU\n', proba2.xyz2neu())
-    # print('HIRVONEN\n', proba2.xyz2flh())
+    # print('\nflh2xyz\n', proba2.flh2xyz())
+    # print('\nPL1992\n', proba2.fl2PL1992())
+    # print('\nPL2000\n', proba2.fl2PL2000())
+    # print('\nNEU\n', proba2.xyz2neu())
+    # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra')
     proba3.wczytajplik('test.txt', 'XYZ')
     # print(proba3.wczytajplik('test.txt', 'XYZ'))
     proba3.xyz2flh()
-    print(proba3.xyz2flh())
+    print('\nHIRVONEN\n', proba3.xyz2flh())
    
