@@ -247,7 +247,8 @@ class Transformacje():
 
         R = self.__Rneu(f, l)
         print(R)
-        return(R.T @ dX)
+        NEU= R.T @ dX
+        return(NEU)
         
     def flh2xyz(self):
         f=self.f
