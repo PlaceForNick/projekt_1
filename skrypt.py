@@ -81,6 +81,11 @@ class Transformacje():
 
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
+        '''
+        Funkcja przelicza wartosc kąta z stopni na radiany
+        Argumenty
+        ---------
+        X - warto
         znak = 1
         if X[0] == '-':
              znak = -1
