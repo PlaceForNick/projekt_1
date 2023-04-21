@@ -93,6 +93,19 @@ class Transformacje():
 
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
+        '''
+        Funkcja przelicza wartosc kąta z stopni na radiany
+        
+        Argumenty
+        ---------
+        X - wartosc kata w stopniach | TYPE : float
+        
+        Wynik
+        ---------
+        Z - wartosc kata w radianach | TYPE : float
+        
+        '''
+        
         znak = 1
         if X[0] == '-':
              znak = -1
@@ -108,6 +121,30 @@ class Transformacje():
         return(Z)# Z to wartosc w [rad]
         
     def xyz2flh(self): #HIRVONEN
+        '''
+        Funkcja służąca do transformacji współrzędnych ortokartezjańskich (prostokątnych) x, y, z 
+        na współrzędne geodezyjne B, L, h.
+        
+        Argumenty:
+        ----------
+        X : TYPE: FLOAT
+            Współrzędna X w układzie ortokartezjańskim
+        Y : TYPE: FLOAT
+            Współrzędna Y w układzie ortokartezjańskim
+        Z : TYPE: FLOAT
+            Współrzędna Z w układzie ortokartezjańskim
+            
+        Wynik:
+        ----------
+        
+        f : TYPE: FLOAT
+            Szerokokosc geodezyjna [stopnie]
+        l: TYPE: FLOAT
+            Długosc geodezyjna [stopnie]
+        h : TYPE: FLOAT
+            Wysokosc elipsoidalna [metry]
+        
+        '''
         X = self.X 
         Y = self.Y
         Z = self.Z
@@ -159,10 +196,35 @@ class Transformacje():
         return(sigma)
        
     def fl2PL2000(self,m0= 0.999923):
+        '''
+        Funkcja przelicza współrzędne geodezyjne na współrzędne prostokątne układu 2000.
+
+        Parameters
+        ----------
+        f : TYPE : [float] : Szerokość geodezyjna [stopnie]
+        l : TYPE : [float] : Długość geodezyjna [stopnie]
+        
+        m0 : TYPE, optional
+            DESCRIPTION. The default is 0.999923.
+
+        Raises
+        ------
+        NieprawidlowaWartosc
+            DESCRIPTION.
+
+        Returns
+        -------
+        x2000 : TYPE : [float] : współrzędna X w układzie 2000 [metry]
+        y2000 : TYPE : [float] : współrzędna Y w układzie 2000 [metry]
+
+        '''
+
         if self.f =='' or self.l =='':
             self.xyz2flh()
         f=self.f
         l=self.l
+        f = self.f
+        l = self.l
         a = self.a
         e2 = self.e2
         try:
@@ -200,6 +262,25 @@ class Transformacje():
             return(x2000,y2000)
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
+        '''
+        Funkcja przelicza współrzędne geodezyjne na współrzędne prostokątne układu 1992.
+
+        Parameters
+        ----------
+        f : TYPE : [float] : Szerokość geodezyjna [stopnie]
+        l : TYPE : [float] : Długość geodezyjna [stopnie]
+        
+        l0 : TYPE, optional
+            DESCRIPTION. The default is radians(19).
+        m0 : TYPE, optional
+            DESCRIPTION. The default is 0.9993.
+
+        Returns
+        -------
+        x1992 : TYPE : [float] : współrzędna X w układzie 1992 [metry]
+        y1992 : TYPE : [float] : współrzędna Y w układzie 1992 [metry]
+
+        '''
         a=self.a
         e2=self.e2
         if self.f =='' or self.l =='':
@@ -215,9 +296,9 @@ class Transformacje():
         sigm =self.__sigma(f)
         xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
         ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
-        x92 = xgk * m0 - 5300000
-        y92 = ygk * m0 + 500000
-        return(x92,y92)
+        x1992 = xgk * m0 - 5300000
+        y1992 = ygk * m0 + 500000
+        return(x1992,y1992)
       
     def __saz2neu(self):
         s = self.s
@@ -235,8 +316,26 @@ class Transformacje():
         return(R)
         
     def xyz2neu(self):
+        '''
+        Funckja obliczająca wektor w układzie NEU
+        
+        Parameters:
+        -----------
+        X: TYPE : FLOAT
+            Wspolrzedna X prostokatna[m]
+        Y: TYPE : FLOAT
+            Wspolrzedna Y prostokatna[m]
+        Z: TYPE : FLOAT
+            Wspolrzedna Z prostokatna[m]
+
+        Returns
+        -------
+        NEU: TYPE : LIST 
+            Współrzedne topocentryczne (North , East (E), Up (U))'''
+
         if self.f =='' or self.l =='':
             self.xyz2flh()
+
         f=self.f
         l=self.l
             
@@ -251,6 +350,23 @@ class Transformacje():
         return(NEU)
         
     def flh2xyz(self):
+        '''
+        Funkcja przelicza ze współrzędnych krzywoliniowych na współrzędne prostokątne.
+        
+        Parameters:
+        ----------
+        
+        phi - szerokość geograficzna punktu | typ: lista
+        lam - długość geograficzna punktu   | typ: lista
+        hel - wysokość punktu               | typ: float lub int
+
+        Returns
+        -------
+        X - współrzędna prostokątna X punktu [metry] | typ: float
+        Y - współrzędna prostokątna Y punktu [metry] | typ: float
+        Z - współrzędna prostokątna Z punktu [metry] | typ: float
+
+        '''
         f=self.f
         l=self.l
         h=self.h
