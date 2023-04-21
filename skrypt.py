@@ -513,11 +513,42 @@ class Transformacje():
                 (self.X).append(j[nr + 0])
                 (self.Y).append(j[nr + 1])
                 (self.Z).append(j[nr + 2])
+                
+        elif typ == 'XYZ2':
+            self.X2 = []
+            self.Y2 = []
+            self.Z2 = []
+            for i, j in enumerate(dane):
+                (self.X2).append(j[nr + 0])
+                (self.Y2).append(j[nr + 1])
+                (self.Z2).append(j[nr + 2])
+                
+        elif typ == 'flh':
+            self.f = []
+            self.l = []
+            self.h = []
+            for i, j in enumerate(dane):
+                (self.f).append(j[nr + 0])
+                (self.l).append(j[nr + 1])
+                (self.h).append(j[nr + 2])
+                
+        elif typ == 'saz':
+            self.s = []
+            self.alfa = []
+            self.z = []
+            for i, j in enumerate(dane):
+                (self.s).append(j[nr + 0])
+                (self.alfa).append(j[nr + 1])
+                (self.z).append(j[nr + 2])
+        
+        else:
+            raise NotImplementedError(f'Podany przez Ciebie typ danych "{typ}" jest nieporawny. Wybierz jedna z podanych ponizej wartosci:\n'
+                                      '- XYZ\n'
+                                      '- XYZ2\n'
+                                      '- flh\n'
+                                      '- saz\n')
 
-
- 
-
-
+    
 if __name__=='__main__':
     
     proba1 = Transformacje(f='52 0 5.72012',
@@ -556,7 +587,8 @@ if __name__=='__main__':
     
     proba3 = Transformacje(model='kra')
     proba3.wczytajplik('test.txt', 'XYZ')
-    # print(proba3.wczytajplik('test.txt', 'XYZ'))
+    proba3.wczytajplik('test.txt', 'flh', nr = 3)
     proba3.xyz2flh()
+    print('\nPL1992\n', proba3.fl2PL1992())
     print('\nHIRVONEN\n', proba3.xyz2flh())
    
