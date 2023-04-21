@@ -83,9 +83,17 @@ class Transformacje():
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
         Funkcja przelicza wartosc kąta z stopni na radiany
+        
         Argumenty
         ---------
-        X - warto
+        X - wartosc kata w stopniach | TYPE : float
+        
+        Wynik
+        ---------
+        Z - wartosc kata w radianach | TYPE : float
+        
+        '''
+        
         znak = 1
         if X[0] == '-':
              znak = -1
@@ -101,6 +109,26 @@ class Transformacje():
         return(Z)# Z to wartosc w [rad]
         
     def xyz2flh(self): #HIRVONEN
+        '''
+        Funkcja służąca do transformacji współrzędnych ortokartezjańskich (prostokątnych) x, y, z 
+        na współrzędne geodezyjne B, L, h.
+        
+        Argumenty:
+        ----------
+        X : TYPE: FLOAT
+            Współrzędna X w układzie ortokartezjańskim
+        Y : TYPE: FLOAT
+            Współrzędna Y w układzie ortokartezjańskim
+        Z : TYPE: FLOAT
+            Współrzędna Z w układzie ortokartezjańskim
+            
+        Wynik:
+        ----------
+        
+        f : TYPE: FLOAT
+            Szeroko
+        
+        '''
         X = self.X 
         Y = self.Y
         Z = self.Z
