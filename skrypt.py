@@ -63,32 +63,77 @@ class Transformacje():
             raise NotImplementedError(f'Podana przez Ciebie wartość zapis "{zapis}" jest nieprawidłowa. Wybierz jedna z podanych ponizej wartosci:'
                                       '- False'
                                       '- True')
+        if type(X) == list:
+            self.X = X
+        else:
+            self.X = []
+            (self.X).append(X)
         
-        self.X = []
-        self.Y = []
-        self.Z = []
-        self.f = []
-        self.l = []
-        self.h = []
-        self.X2 = []
-        self.Y2 = []
-        self.Z2 = []
-        self.s = []
-        self.alfa = []
-        self.z = []
+        if type(Y) == list:
+            self.Y = Y
+        else:
+            self.Y = []
+            (self.Y).append(Y)
         
-        (self.X).append(X)
-        (self.Y).append(Y)
-        (self.Z).append(Z)
-        (self.f).append(f)
-        (self.l).append(l)
-        (self.h).append(h)
-        (self.X2).append(X2)
-        (self.Y2).append(Y2)
-        (self.Z2).append(Z2)
-        (self.s).append(s)
-        (self.alfa).append(alfa)
-        (self.z).append(z)
+        if type(Z) == list:
+            self.Z = Z
+        else:
+            self.Z = []
+            (self.Z).append(Z)
+        
+        if type(f) == list:
+            self.f = f
+        else:
+            self.f = []
+            (self.f).append(f)
+        
+        if type(l) == list:
+            self.l = l
+        else:
+            self.l = []
+            (self.l).append(l)
+        
+        if type(h) == list:
+            self.h = h
+        else:
+            self.h = []
+            (self.h).append(h)
+            
+        if type(X2) == list:
+            self.X2 = X2
+        else:
+            self.X2 = []
+            (self.X2).append(X2)
+            
+        if type(Y2) == list:
+            self.Y2 = Y2
+        else:
+            self.Y2 = []
+            (self.Y2).append(Y2)
+        
+        if type(Z2) == list:
+            self.Z2 = Z2
+        else:
+            self.Z2 = []
+            (self.Z2).append(Z2)
+            
+        if type(s) == list:
+            self.s = s
+        else:
+            self.s = []
+            (self.s).append(s)
+        
+        if type(alfa) == list:
+            self.alfa = alfa
+        else:
+            self.alfa = []
+            (self.alfa).append(alfa)
+            
+        if type(z) == list:
+            self.z = z
+        else:
+            self.z = []
+            (self.z).append(z)
                 
         f_ost = []
         i = 0  
@@ -683,22 +728,22 @@ if __name__=='__main__':
     print('\nNEU\n', proba1.xyz2neu())
     print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    # proba2 = Transformacje(f='52 0 5.72012',
-    #                         l='16 0 21.66234',
-    #                         h=289.08952781930566,
-    #                         s=43000.0,
-    #                         alfa=230,
-    #                         z=90,
-    #                         X=[3782450, 3782450],
-    #                         Y=[1085030, 1085030],
-    #                         Z=[5003140, 5003140],
-    #                         model='grs80')
+    proba2 = Transformacje(f='52 0 5.72012',
+                            l='16 0 21.66234',
+                            h=289.08952781930566,
+                            s=43000.0,
+                            alfa=230,
+                            z=90,
+                            X=[3782450, 3782450],
+                            Y=[1085030, 1085030],
+                            Z=[5003140, 5003140],
+                            model='grs80')
     
     # print('\nflh2xyz\n', proba2.flh2xyz())
     # print('\nPL1992\n', proba2.fl2PL1992())
     # print('\nPL2000\n', proba2.fl2PL2000())
     # print('\nNEU\n', proba2.xyz2neu())
-    # print('\nHIRVONEN\n', proba2.xyz2flh())
+    print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
     # proba3.wczytajplik('test.txt', 'XYZ')
