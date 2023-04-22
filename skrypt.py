@@ -670,6 +670,7 @@ class Transformacje():
             self.alfa = []
             self.z = []
             for i, j in enumerate(dane):
+                i = 0
                 for x in j[nr + 1]:
                     if x ==' ':
                         j[nr + 1] = (j[nr + 1])[i:]
@@ -684,7 +685,6 @@ class Transformacje():
                     else:
                         break
                 (self.s).append(float(j[nr + 0]))
-                print(j[nr + 1])
                 try:
                     x = float(j[nr + 1])
                     (self.alfa).append(np.radians(x))  
@@ -745,9 +745,9 @@ if __name__=='__main__':
     proba3.wczytajplik('test.txt', 'flh', nr = 3)
     proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    # print('\nflh2xyz\n', proba3.flh2xyz())
-    # print('\nPL1992\n', proba3.fl2PL1992())
-    # print('\nPL2000\n', proba3.fl2PL2000())
+    print('\nflh2xyz\n', proba3.flh2xyz())
+    print('\nPL1992\n', proba3.fl2PL1992())
+    print('\nPL2000\n', proba3.fl2PL2000())
     print('\nNEU\n', proba3.xyz2neu())
     # print('\nHIRVONEN\n', proba3.xyz2flh())
    
