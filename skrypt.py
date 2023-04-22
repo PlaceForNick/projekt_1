@@ -490,13 +490,10 @@ class Transformacje():
             
         return(x_ost,y_ost)
       
-    def __saz2neu(self):
-        s = self.s
-        alfa = self.alfa
-        z = self.z
+    def __saz2neu(self, s, alfa, z):
         dX = np.array([s * np.sin(z) * np.cos(alfa),
-                          s * np.sin(z) * np.sin(alfa),
-                          s * np.cos(z)])
+                       s * np.sin(z) * np.sin(alfa),
+                       s * np.cos(z)])
         return(dX)
 
     def __Rneu(self, f, l):
@@ -526,7 +523,6 @@ class Transformacje():
         a=self.a
         e2=self.e2
         NEU_ost = []
-        y_ost = []
         i = 0
         
         while i < (len(self.f) or len(self.X)):
@@ -537,30 +533,28 @@ class Transformacje():
             l = self.l[i]
             
             if self.X2 == [''] or self.Y2 == [''] or self.Z2 == ['']:  
-                dX = self.__saz2neu()
+                dX = self.__saz2neu(self.s[i], self.alfa[i], self.z[i])
             else:
                 dX = [self.X2[i], self.Y2[i], self.Z2[i]]
     
             R = self.__Rneu(f, l)
-            # print(R)
             NEU = R.T @ dX
             
             NEU_ost.append(NEU)
             i += 1
-        
+            print(self.s, self.alfa, self.z)
         if self.zapis == True:
             self.plik = open(self.nazwa, 'a')
             self.plik.write('--------------------------------------------------\n')
             self.plik.write("N [m]              E [m]              U [m]\n")
             self.plik.write('--------------------------------------------------\n')
             i = 0
-            while i < (len(NEU))/3:
-                print(NEU[0][i])
-                self.plik.write(f'{NEU[0][i]:10.3f} {NEU[1][i]:10.3f} {NEU[2][i]:10.3f}\n')
+            while i < len(NEU_ost): 
+                self.plik.write(f'{NEU_ost[i][0]:10.3f} {NEU_ost[i][1]:10.3f} {NEU_ost[i][2]:10.3f}\n')
                 i += 1
             self.plik.close()
             
-        return(NEU)
+        return(NEU_ost)
         
     def flh2xyz(self):
         '''
@@ -690,6 +684,7 @@ class Transformacje():
                     else:
                         break
                 (self.s).append(float(j[nr + 0]))
+                print(j[nr + 1])
                 try:
                     x = float(j[nr + 1])
                     (self.alfa).append(np.radians(x))  
@@ -710,49 +705,49 @@ class Transformacje():
     
 if __name__=='__main__':
     
-    proba1 = Transformacje(f='52 0 5.72012',
-                           l='16 0 21.66234',
-                           h=289.08952781930566,
-                           s=43000.0,
-                           alfa=230,
-                           z=90,
-                           X=3782450,
-                           Y=1085030,
-                           Z=5003140,
-                           model='grs80',
-                           zapis=True)
+    # proba1 = Transformacje(f='52 0 5.72012',
+    #                        l='16 0 21.66234',
+    #                        h=289.08952781930566,
+    #                        s=43000.0,
+    #                        alfa=230,
+    #                        z=90,
+    #                        X=3782450,
+    #                        Y=1085030,
+    #                        Z=5003140,
+    #                        model='grs80',
+    #                        zapis=True)
     
-    print('\nflh2xyz\n', proba1.flh2xyz())
-    print('\nPL1992\n', proba1.fl2PL1992())
-    print('\nPL2000\n', proba1.fl2PL2000())
-    print('\nNEU\n', proba1.xyz2neu())
-    print('\nHIRVONEN\n', proba1.xyz2flh())
+    # print('\nflh2xyz\n', proba1.flh2xyz())
+    # print('\nPL1992\n', proba1.fl2PL1992())
+    # print('\nPL2000\n', proba1.fl2PL2000())
+    # print('\nNEU\n', proba1.xyz2neu())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    proba2 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=[3782450, 3782450],
-                            Y=[1085030, 1085030],
-                            Z=[5003140, 5003140],
-                            model='grs80')
+    # proba2 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=[3782450, 3782450],
+    #                         Y=[1085030, 1085030],
+    #                         Z=[5003140, 5003140],
+    #                         model='grs80')
     
     # print('\nflh2xyz\n', proba2.flh2xyz())
     # print('\nPL1992\n', proba2.fl2PL1992())
     # print('\nPL2000\n', proba2.fl2PL2000())
     # print('\nNEU\n', proba2.xyz2neu())
-    print('\nHIRVONEN\n', proba2.xyz2flh())
+    # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
     # proba3.wczytajplik('test.txt', 'XYZ')
     proba3.wczytajplik('test.txt', 'flh', nr = 3)
     proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    print('\nflh2xyz\n', proba3.flh2xyz())
-    print('\nPL1992\n', proba3.fl2PL1992())
-    print('\nPL2000\n', proba3.fl2PL2000())
+    # print('\nflh2xyz\n', proba3.flh2xyz())
+    # print('\nPL1992\n', proba3.fl2PL1992())
+    # print('\nPL2000\n', proba3.fl2PL2000())
     print('\nNEU\n', proba3.xyz2neu())
     # print('\nHIRVONEN\n', proba3.xyz2flh())
    
