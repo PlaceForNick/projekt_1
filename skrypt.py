@@ -1,4 +1,4 @@
-# import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> może trzeba pip install???
+import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> moÅ¼e trzeba pip install???
 from math import *
 import os
 import argparse
@@ -18,11 +18,11 @@ class Style():
     Reset = '\033[0m'
     
 class NieprawidlowaWartosc(Exception):
-    '''Bład oznaczający podanie niepoprawnej lub/i nieobsługiwanej przez program wartości.
+    '''Blad oznaczajacy podanie niepoprawnej lub/i nieobslugiwanej przez program wartosci.
     
-        liczba - błędna wartość podana przez użytkowanika
-        minimum - (opcjonalnie) - minimalna wymagana wartość
-        maksimum - (opcjonalnie) - maksymalna wymagana wartość
+        liczba - bledna wartoÅsc podana przez uzytkowanika
+        minimum - (opcjonalnie) - minimalna wymagana wartosc
+        maksimum - (opcjonalnie) - maksymalna wymagana wartosc
         '''
     def __init__(self, liczba, minimum = 'brak', maksimum = 'brak'):
         Exception.__init__(self)
@@ -38,6 +38,27 @@ class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         
+        parser = argparse.ArgumentParser(description='opis skryptu')
+        
+        parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
+        parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
+        parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
+        
+        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
+        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
+        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
+
+        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool)
+        args = parser.parse_args()
+        
+        X = args.X
+        Y = args.Y
+        Z = args.Z
+        f = args.f
+        l = args.l
+        h = args.H
+        zapis = args.zapis
+        
         if   model  == 'kra':
             self.a= 6378245
             self.b= 6356863.01877
@@ -48,7 +69,7 @@ class Transformacje():
             self.a = 6378137.0
             self.b = 6356752.31414036
         else:
-            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsługiwany")
+            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obslugiwany")
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         # print(model,self.b)
@@ -62,8 +83,8 @@ class Transformacje():
         elif zapis == False:
             self.zapis = zapis
         else:
-            raise NotImplementedError(f'Podana przez Ciebie wartość zapis "{zapis}" jest nieprawidłowa. Wybierz jedna z podanych ponizej wartosci:'
-                                      '- False'
+            raise NotImplementedError(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
+                                      '- False\n'
                                       '- True')
         if type(X) == list:
             self.X = X
@@ -215,7 +236,8 @@ class Transformacje():
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
-        Funkcja przelicza wartosc kąta z stopni na radiany
+        Funkcja przelicza wartosc ka
+ta z stopni na radiany
         
         Argumenty
         ---------
@@ -243,17 +265,19 @@ class Transformacje():
         
     def xyz2flh(self): #HIRVONEN
         '''
-        Funkcja służąca do transformacji współrzędnych ortokartezjańskich (prostokątnych) x, y, z 
-        na współrzędne geodezyjne B, L, h.
+        Funkcja sluzaca
+ca do transformacji wspolrzednych ortokartezjanskich (prostoka
+tnych) x, y, z 
+        na wspolrzedne geodezyjne B, L, h.
         
         Argumenty:
         ----------
         X : TYPE: FLOAT
-            Współrzędna X w układzie ortokartezjańskim
+            Wspolrzedna X w ukladzie ortokartezjanskim
         Y : TYPE: FLOAT
-            Współrzędna Y w układzie ortokartezjańskim
+            Wspolrzedna Y w ukladzie ortokartezjanskim
         Z : TYPE: FLOAT
-            Współrzędna Z w układzie ortokartezjańskim
+            Wspolrzedna Z w ukladzie ortokartezjanskim
             
         Wynik:
         ----------
@@ -261,7 +285,7 @@ class Transformacje():
         f : TYPE: FLOAT
             Szerokokosc geodezyjna [stopnie]
         l: TYPE: FLOAT
-            Długosc geodezyjna [stopnie]
+            Dlugosc geodezyjna [stopnie]
         h : TYPE: FLOAT
             Wysokosc elipsoidalna [metry]
         
@@ -347,12 +371,12 @@ class Transformacje():
        
     def fl2PL2000(self,m0= 0.999923):
         '''
-        Funkcja przelicza współrzędne geodezyjne na współrzędne prostokątne układu 2000.
+        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 2000.
 
         Parameters
         ----------
-        f : TYPE : [float] : Szerokość geodezyjna [stopnie]
-        l : TYPE : [float] : Długość geodezyjna [stopnie]
+        f : TYPE : [float] : SzerokoÅsc geodezyjna [stopnie]
+        l : TYPE : [float] : Dlugosc geodezyjna [stopnie]
         
         m0 : TYPE, optional
             DESCRIPTION. The default is 0.999923.
@@ -364,8 +388,8 @@ class Transformacje():
 
         Returns
         -------
-        x2000 : TYPE : [float] : współrzędna X w układzie 2000 [metry]
-        y2000 : TYPE : [float] : współrzędna Y w układzie 2000 [metry]
+        x2000 : TYPE : [float] : Wspolrzedna X w ukladzie 2000 [metry]
+        y2000 : TYPE : [float] : Wspolrzedna Y w ukladzie 2000 [metry]
 
         '''
 
@@ -399,9 +423,9 @@ class Transformacje():
                     raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
             except NieprawidlowaWartosc as nw:
                 print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
-                      f'podana wartość l znajduje się poza zakresem stref odwzorowawcych układu współrzędnych PL2000. '
-                      f'Obsługiwany zakres to {nw.minimum}° - {nw.maksimum}° '
-                      f'Podana przez Ciebie wartość to {nw.liczba}')
+                      f'podana wartosc l znajduje sie poza zakresem stref odwzorowawcych ukladu wspolrzednych PL2000. '
+                      f'Obslugiwany zakres to {nw.minimum}° - {nw.maksimum}° '
+                      f'Podana przez Ciebie wartosc to {nw.liczba}')
             else:         
                 b2 = a**2*(1 - e2)
                 ep2 = (a**2 - b2)/b2
@@ -434,12 +458,12 @@ class Transformacje():
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
-        Funkcja przelicza współrzędne geodezyjne na współrzędne prostokątne układu 1992.
+        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 1992.
 
         Parameters
         ----------
-        f : TYPE : [float] : Szerokość geodezyjna [stopnie]
-        l : TYPE : [float] : Długość geodezyjna [stopnie]
+        f : TYPE : [float] : Szerokosc geodezyjna [stopnie]
+        l : TYPE : [float] : Dlugosc geodezyjna [stopnie]
         
         l0 : TYPE, optional
             DESCRIPTION. The default is radians(19).
@@ -448,8 +472,8 @@ class Transformacje():
 
         Returns
         -------
-        x1992 : TYPE : [float] : współrzędna X w układzie 1992 [metry]
-        y1992 : TYPE : [float] : współrzędna Y w układzie 1992 [metry]
+        x1992 : TYPE : [float] : wspolrzedna X w ukladzie 1992 [metry]
+        y1992 : TYPE : [float] : wspolrzedne Y w ukladzie 1992 [metry]
 
         '''
         a=self.a
@@ -507,7 +531,8 @@ class Transformacje():
         
     def xyz2neu(self):
         '''
-        Funckja obliczająca wektor w układzie NEU
+        Funckja obliczaja
+ca wektor w ukÅadzie NEU
         
         Parameters:
         -----------
@@ -521,7 +546,7 @@ class Transformacje():
         Returns
         -------
         NEU: TYPE : LIST 
-            Współrzedne topocentryczne (North , East (E), Up (U))
+            Wspolrzedne topocentryczne (North , East (E), Up (U))
             
         '''
 
@@ -563,20 +588,22 @@ class Transformacje():
         
     def flh2xyz(self):
         '''
-        Funkcja przelicza ze współrzędnych krzywoliniowych na współrzędne prostokątne.
+        Funkcja przelicza ze wspolrzednych krzywoliniowych na wspolrzedne prostokatne.
         
         Parameters:
         ----------
         
-        phi - szerokość geograficzna punktu | typ: lista
-        lam - długość geograficzna punktu   | typ: lista
-        hel - wysokość punktu               | typ: float lub int
+        phi - szerokosc geograficzna punktu | typ: lista
+        lam - dlugosc geograficzna punktu   | typ: lista
+        hel - wysokosc punktu               | typ: float lub int
 
         Returns
         -------
-        X - współrzędna prostokątna X punktu [metry] | typ: float
-        Y - współrzędna prostokątna Y punktu [metry] | typ: float
-        Z - współrzędna prostokątna Z punktu [metry] | typ: float
+        X - wspolrzedna prostoka
+tna X punktu [metry] | typ: float
+        Y - wspolrzedna prostokatna Y punktu [metry] | typ: float
+        Z - wspolrzedna prostoka
+tna Z punktu [metry] | typ: float
 
         '''
         a = self.a 
@@ -707,28 +734,6 @@ class Transformacje():
                                       '- XYZ2\n'
                                       '- flh\n'
                                       '- saz\n')
-    def wczytajzargparse(self):
-    
-        parser = argparse.ArgumentParser(description='opis skryptu')
-                
-        parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
-        parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
-        parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
-        
-        parser.add_argument('-f', help="wartosc wspolrzednej f [° ' '']", required=False, type=str)
-        parser.add_argument('-l', help="wartosc wspolrzednej l [° ' '']", required=False, type=str)
-        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
-
-        
-        args = parser.parse_args()
-              
-        self.X = args.X
-        self.Y = args.Y
-        self.Z = args.Z
-              
-        print("Podana wartosc X: ", args.X)
-        print("Podana wartosc Y: ", args.Y)
-        print("Podana wartosc Z: ", args.Z)
 
 if __name__=='__main__':
     
@@ -778,6 +783,7 @@ if __name__=='__main__':
     # print('\nNEU\n', proba3.xyz2neu())
     # # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-    proba4 = Transformacje()
-    proba4.wczytajzargparse()
+    proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
+    # proba4.wczytajzargparse() # <-- podanie argumentów z argpase
+    proba4.xyz2flh() # <-- wywołanie metody i obliczenie
     
