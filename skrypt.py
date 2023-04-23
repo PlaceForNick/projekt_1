@@ -1,6 +1,7 @@
-import numpy as np
+# import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> może trzeba pip install???
 from math import *
 import os
+import argparse
 
 os.system("")
 
@@ -35,7 +36,7 @@ class NieprawidlowaWartosc(Exception):
 
 class Transformacje():
         
-    def __init__(self, model, zapis = False, nazwa = 'output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
+    def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         
         if   model  == 'kra':
             self.a= 6378245
@@ -706,52 +707,77 @@ class Transformacje():
                                       '- XYZ2\n'
                                       '- flh\n'
                                       '- saz\n')
+    def wczytajzargparse(self):
     
+        parser = argparse.ArgumentParser(description='opis skryptu')
+                
+        parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
+        parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
+        parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
+        
+        parser.add_argument('-f', help="wartosc wspolrzednej f [° ' '']", required=False, type=str)
+        parser.add_argument('-l', help="wartosc wspolrzednej l [° ' '']", required=False, type=str)
+        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
+
+        
+        args = parser.parse_args()
+              
+        self.X = args.X
+        self.Y = args.Y
+        self.Z = args.Z
+              
+        print("Podana wartosc X: ", args.X)
+        print("Podana wartosc Y: ", args.Y)
+        print("Podana wartosc Z: ", args.Z)
+
 if __name__=='__main__':
     
-    proba1 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=3782450,
-                            Y=1085030,
-                            Z=5003140,
-                            model='grs80',
-                            zapis=True)
+    # proba1 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=3782450,
+    #                         Y=1085030,
+    #                         Z=5003140,
+    #                         model='grs80',
+    #                         zapis=True)
     
-    print('\nflh2xyz\n', proba1.flh2xyz())
-    print('\nPL1992\n', proba1.fl2PL1992())
-    print('\nPL2000\n', proba1.fl2PL2000())
-    print('\nNEU\n', proba1.xyz2neu())
-    print('\nHIRVONEN\n', proba1.xyz2flh())
+    # print('\nflh2xyz\n', proba1.flh2xyz())
+    # print('\nPL1992\n', proba1.fl2PL1992())
+    # print('\nPL2000\n', proba1.fl2PL2000())
+    # print('\nNEU\n', proba1.xyz2neu())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    proba2 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=[3782450, 3782450],
-                            Y=[1085030, 1085030],
-                            Z=[5003140, 5003140],
-                            model='grs80')
+    # proba2 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=[3782450, 3782450],
+    #                         Y=[1085030, 1085030],
+    #                         Z=[5003140, 5003140],
+    #                         model='grs80')
     
-    print('\nflh2xyz\n', proba2.flh2xyz())
-    print('\nPL1992\n', proba2.fl2PL1992())
-    print('\nPL2000\n', proba2.fl2PL2000())
-    print('\nNEU\n', proba2.xyz2neu())
-    print('\nHIRVONEN\n', proba2.xyz2flh())
+    # print('\nflh2xyz\n', proba2.flh2xyz())
+    # print('\nPL1992\n', proba2.fl2PL1992())
+    # print('\nPL2000\n', proba2.fl2PL2000())
+    # print('\nNEU\n', proba2.xyz2neu())
+    # print('\nHIRVONEN\n', proba2.xyz2flh())
     
-    proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
-    # proba3.wczytajplik('test.txt', 'XYZ')
-    proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    proba3.wczytajplik('test.txt', 'saz', nr = 6)
+    # proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
+    # # proba3.wczytajplik('test.txt', 'XYZ')
+    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    # proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    print('\nflh2xyz\n', proba3.flh2xyz())
-    print('\nPL1992\n', proba3.fl2PL1992())
-    print('\nPL2000\n', proba3.fl2PL2000())
-    print('\nNEU\n', proba3.xyz2neu())
-    # print('\nHIRVONEN\n', proba3.xyz2flh())
-   
+    # print('\nflh2xyz\n', proba3.flh2xyz())
+    # print('\nPL1992\n', proba3.fl2PL1992())
+    # print('\nPL2000\n', proba3.fl2PL2000())
+    # print('\nNEU\n', proba3.xyz2neu())
+    # # print('\nHIRVONEN\n', proba3.xyz2flh())
+    
+    proba4 = Transformacje()
+    proba4.wczytajzargparse()
+    
