@@ -37,95 +37,7 @@ class NieprawidlowaWartosc(Exception):
 class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
-        
-        parser = argparse.ArgumentParser(description='Transformacje wspolrzednych')
-        
-        parser.add_argument('-X', help='wartosc wspolrzednej pierwszegi punktu X [m]', required=False, default='')
-        parser.add_argument('-Y', help='wartosc wspolrzednej pierwszego punktu Y [m]', required=False, default='')
-        parser.add_argument('-Z', help='wartosc wspolrzednej pierwszego punktu Z [m]', required=False, default='')
-        parser.add_argument('--model', choices=['grs80','wgs84', 'kra'],help='model elipsoidy', required=False, type=str, default='grs80')
-        parser.add_argument('-X2', help='wartosc wspolrzednej drugiego punktu X [m]', required=False, default='')
-        parser.add_argument('-Y2', help='wartosc wspolrzednej drugiego punktu Y [m]', required=False, default='')
-        parser.add_argument('-Z2', help='wartosc wspolrzednej drugiego punktu Z [m]', required=False, default='')
-        parser.add_argument('-s', help='wartosc dlugosci miedzy dwoma punktami [m]', required=False, default='')
-        parser.add_argument('-alfa', help="wartosc kat poziomego [Â° ' '']", required=False, default='')
-        parser.add_argument('-z', help="wartosc kat zenitalnego [Â° ' '']", required=False, default='')
-        
-        
-        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, default='')
-        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, default='')
-        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, default='')
-        
-        parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str, default='')
-        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool, default='False')
-        args = parser.parse_args()
-        
-        try:
-            X = float(args.X)
-        except ValueError:
-            X = args.X
-            
-        try:
-            Y = float(args.Y)
-        except ValueError:   
-            Y = args.Y
-        
-        try:
-            Z = float(args.Z)
-        except ValueError:
-            Z = args.Z
-        
-        try:
-            X2 = float(args.X2)
-        except ValueError:
-            X2 = args.X2
-            
-        try:
-            Y2 = float(args.Y2)
-        except ValueError:
-            Y2 = args.Y2
-            
-        try:
-            Z2 = float(args.Z2)
-        except ValueError:
-            Z2 = args.Z2
-        
-        try:
-            s = float(args.s)
-        except ValueError:
-            s = args.s
-            
-        try:
-            alfa = float(args.alfa)
-        except ValueError:
-            alfa = args.alfa
-        
-        try:
-            z = float(args.z)
-        except ValueError:
-            z= args.z
-        
-        try:
-            f = float(args.f)
-        except ValueError:
-            f = args.f
-            
-        try:
-            l = float(args.l)
-        except ValueError:
-            l = args.l
-        
-        try:
-            h = float(args.H)
-        except ValueError:
-            h = args.H
-        
-        zapis = args.zapis
-        model = args.model
-        metoda= args.metoda
-        # if metoda=='xyz2flh':
-        #     print(self.xyz2flh())
-        # print(f, type(f))
+
         if   model  == 'kra':
             self.a= 6378245
             self.b= 6356863.01877
@@ -139,8 +51,6 @@ class Transformacje():
             raise NotImplementedError(f"{model} ten model elipsoidy nie jest obslugiwany")
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
-        # print(model,self.b)
-
         
         if zapis == True:
             self.zapis = zapis
@@ -240,8 +150,6 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            # except TypeError:
-                # break
         self.f = f_ost
         
         l_ost = []
@@ -259,8 +167,6 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            # except TypeError:
-            #     break
         self.l = l_ost
         
         alfa_ost = []
@@ -277,9 +183,7 @@ class Transformacje():
                 alfa_ost.append(alfa)
                 i += 1
             except IndexError:
-                break
-            # except TypeError:
-            #     break                
+                break              
         self.alfa = alfa_ost
         
         z_ost = []
@@ -297,24 +201,26 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            # except TypeError:
-            #     break
         self.z = z_ost
         
-        print(f)
-        
-        if metoda=='xyz2flh':
-            print(self.xyz2flh())
-        elif metoda=='flh2xyz':
-            print(self.flh2xyz())
-        elif metoda=='pl2000':
-            print(self.fl2PL2000())
-        elif metoda=='pl1992':
-            print(self.fl2PL1992())
-        elif metoda=='neu':
-            print(self.xyz2neu())
-        else:
-            raise NotImplementedError(f"{metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
+        try:
+            print(self.metoda)
+            if self.metoda=='xyz2flh':
+                print(self.xyz2flh())
+            elif self.metoda=='flh2xyz':
+                print(self.flh2xyz())
+            elif self.metoda=='pl2000':
+                print(self.fl2PL2000())
+            elif self.metoda=='pl1992':
+                print(self.fl2PL1992())
+            elif self.metoda=='neu':
+                print(self.xyz2neu())
+            if self.metoda=='':
+                pass
+            else:
+                raise NotImplementedError(f"{metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
+        except AttributeError:
+            pass
         
         
      
@@ -818,55 +724,158 @@ tna Z punktu [metry] | typ: float
                                       '- flh\n'
                                       '- saz\n')
 
-
+    def wczytajzargparse(self):
+        
+        parser = argparse.ArgumentParser(description='Transformacje wspolrzednych')
+        
+        parser.add_argument('-X', help='wartosc wspolrzednej pierwszegi punktu X [m]', required=False, default='')
+        parser.add_argument('-Y', help='wartosc wspolrzednej pierwszego punktu Y [m]', required=False, default='')
+        parser.add_argument('-Z', help='wartosc wspolrzednej pierwszego punktu Z [m]', required=False, default='')
+        
+        parser.add_argument('-X2', help='wartosc wspolrzednej drugiego punktu X [m]', required=False, default='')
+        parser.add_argument('-Y2', help='wartosc wspolrzednej drugiego punktu Y [m]', required=False, default='')
+        parser.add_argument('-Z2', help='wartosc wspolrzednej drugiego punktu Z [m]', required=False, default='')
+        
+        parser.add_argument('-s', help='wartosc dlugosci miedzy dwoma punktami [m]', required=False, default='')
+        parser.add_argument('-alfa', help="wartosc kat poziomego [Â° ' '']", required=False, default='')
+        parser.add_argument('-z', help="wartosc kat zenitalnego [Â° ' '']", required=False, default='')
+           
+        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, default='')
+        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, default='')
+        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, default='')
+        
+        parser.add_argument('--model', help='model elipsoidy', choices=['grs80','wgs84', 'kra'], required=False, type=str, default='grs80')
+        parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str, default='')
+        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default='False')
+        parser.add_argument('--nazwa', help='nazwa pliku wyjsciowego (.txt)', required=False, type=str, default='output')
+        
+        args = parser.parse_args()
+        
+        try:
+            X = float(args.X)
+        except ValueError:
+            X = args.X
+            
+        try:
+            Y = float(args.Y)
+        except ValueError:   
+            Y = args.Y
+        
+        try:
+            Z = float(args.Z)
+        except ValueError:
+            Z = args.Z
+        
+        try:
+            X2 = float(args.X2)
+        except ValueError:
+            X2 = args.X2
+            
+        try:
+            Y2 = float(args.Y2)
+        except ValueError:
+            Y2 = args.Y2
+            
+        try:
+            Z2 = float(args.Z2)
+        except ValueError:
+            Z2 = args.Z2
+        
+        try:
+            s = float(args.s)
+        except ValueError:
+            s = args.s
+            
+        try:
+            alfa = float(args.alfa)
+        except ValueError:
+            alfa = args.alfa
+        
+        try:
+            z = float(args.z)
+        except ValueError:
+            z= args.z
+        
+        try:
+            f = float(args.f)
+        except ValueError:
+            f = args.f
+            
+        try:
+            l = float(args.l)
+        except ValueError:
+            l = args.l
+        
+        try:
+            h = float(args.H)
+        except ValueError:
+            h = args.H
+        
+        nazwa = args.nazwa
+        zapis = args.zapis
+        model = args.model
+        self.metoda = args.metoda
+        print(self.metoda)
+        
+        self.__init__(model=model, zapis=zapis, nazwa=nazwa, X=X, Y=Y, Z=Z, f=f, l=l, h=h, X2=X2, Y2=Y2, Z2=Z2, s=s, alfa=alfa, z=z)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 if __name__=='__main__':
     
-    proba1 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=3782450,
-                            Y=1085030,
-                            Z=5003140,
-                            model='grs80',
-                            zapis=True)
+    # proba1 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=3782450,
+    #                         Y=1085030,
+    #                         Z=5003140,
+    #                         model='grs80',
+    #                         zapis=True)
     
-    print('\nflh2xyz\n', proba1.flh2xyz())
-    print('\nPL1992\n', proba1.fl2PL1992())
-    print('\nPL2000\n', proba1.fl2PL2000())
-    print('\nNEU\n', proba1.xyz2neu())
-    print('\nHIRVONEN\n', proba1.xyz2flh())
+    # print('\nflh2xyz\n', proba1.flh2xyz())
+    # print('\nPL1992\n', proba1.fl2PL1992())
+    # print('\nPL2000\n', proba1.fl2PL2000())
+    # print('\nNEU\n', proba1.xyz2neu())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    proba2 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=[3782450, 3782450],
-                            Y=[1085030, 1085030],
-                            Z=[5003140, 5003140],
-                            model='grs80')
+    # proba2 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=[3782450, 3782450],
+    #                         Y=[1085030, 1085030],
+    #                         Z=[5003140, 5003140],
+    #                         model='grs80')
     
-    print('\nflh2xyz\n', proba2.flh2xyz())
-    print('\nPL1992\n', proba2.fl2PL1992())
-    print('\nPL2000\n', proba2.fl2PL2000())
-    print('\nNEU\n', proba2.xyz2neu())
-    print('\nHIRVONEN\n', proba2.xyz2flh())
+    # print('\nflh2xyz\n', proba2.flh2xyz())
+    # print('\nPL1992\n', proba2.fl2PL1992())
+    # print('\nPL2000\n', proba2.fl2PL2000())
+    # print('\nNEU\n', proba2.xyz2neu())
+    # print('\nHIRVONEN\n', proba2.xyz2flh())
     
-    proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
-    # proba3.wczytajplik('test.txt', 'XYZ')
-    proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    proba3.wczytajplik('test.txt', 'saz', nr = 6)
+    # proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
+    # # proba3.wczytajplik('test.txt', 'XYZ')
+    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    # proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    print('\nflh2xyz\n', proba3.flh2xyz())
-    print('\nPL1992\n', proba3.fl2PL1992())
-    print('\nPL2000\n', proba3.fl2PL2000())
-    print('\nNEU\n', proba3.xyz2neu())
+    # print('\nflh2xyz\n', proba3.flh2xyz())
+    # print('\nPL1992\n', proba3.fl2PL1992())
+    # print('\nPL2000\n', proba3.fl2PL2000())
+    # print('\nNEU\n', proba3.xyz2neu())
     # print('\nHIRVONEN\n', proba3.xyz2flh())
     
     proba4 = Transformacje()
-
+    proba4.wczytajzargparse()
     
