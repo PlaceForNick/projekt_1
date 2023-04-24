@@ -1,4 +1,4 @@
-# import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> może trzeba pip install???
+# import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> moÅ¼e trzeba pip install???
 from math import *
 import os
 import argparse
@@ -18,11 +18,11 @@ class Style():
     Reset = '\033[0m'
     
 class NieprawidlowaWartosc(Exception):
-    '''Bład oznaczający podanie niepoprawnej lub/i nieobsługiwanej przez program wartości.
+    '''Błąd oznaczający podanie niepoprawnej lub/i nieobsługiwanej przez program wartoci.
     
-        liczba - błędna wartość podana przez użytkowanika
-        minimum - (opcjonalnie) - minimalna wymagana wartość
-        maksimum - (opcjonalnie) - maksymalna wymagana wartość
+        liczba - bÅÄdna wartoÅÄ podana przez uÅ¼ytkowanika
+        minimum - (opcjonalnie) - minimalna wymagana wartoÅÄ
+        maksimum - (opcjonalnie) - maksymalna wymagana wartoÅÄ
         '''
     def __init__(self, liczba, minimum = 'brak', maksimum = 'brak'):
         Exception.__init__(self)
@@ -48,7 +48,7 @@ class Transformacje():
             self.a = 6378137.0
             self.b = 6356752.31414036
         else:
-            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsługiwany")
+            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsÅugiwany")
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         # print(model,self.b)
@@ -62,7 +62,7 @@ class Transformacje():
         elif zapis == False:
             self.zapis = zapis
         else:
-            raise NotImplementedError(f'Podana przez Ciebie wartość zapis "{zapis}" jest nieprawidłowa. Wybierz jedna z podanych ponizej wartosci:'
+            raise NotImplementedError(f'Podana przez Ciebie wartoÅÄ zapis "{zapis}" jest nieprawidÅowa. Wybierz jedna z podanych ponizej wartosci:'
                                       '- False'
                                       '- True')
         if type(X) == list:
@@ -215,7 +215,8 @@ class Transformacje():
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
-        Funkcja przelicza wartosc kąta z stopni na radiany
+        Funkcja przelicza wartosc kÄ
+ta z stopni na radiany
         
         Argumenty
         ---------
@@ -230,7 +231,7 @@ class Transformacje():
         znak = 1
         if X[0] == '-':
              znak = -1
-        Y = X.split(' ' or '"' or "'" or '°' or '-')
+        Y = X.split(' ' or '"' or "'" or 'Â°' or '-')
         d = int(Y[0])
         m = int(Y[1])
         s = float(Y[2])
@@ -243,17 +244,19 @@ class Transformacje():
         
     def xyz2flh(self): #HIRVONEN
         '''
-        Funkcja służąca do transformacji współrzędnych ortokartezjańskich (prostokątnych) x, y, z 
-        na współrzędne geodezyjne B, L, h.
+        Funkcja sÅuÅ¼Ä
+ca do transformacji wspÃ³ÅrzÄdnych ortokartezjaÅskich (prostokÄ
+tnych) x, y, z 
+        na wspÃ³ÅrzÄdne geodezyjne B, L, h.
         
         Argumenty:
         ----------
         X : TYPE: FLOAT
-            Współrzędna X w układzie ortokartezjańskim
+            WspÃ³ÅrzÄdna X w ukÅadzie ortokartezjaÅskim
         Y : TYPE: FLOAT
-            Współrzędna Y w układzie ortokartezjańskim
+            WspÃ³ÅrzÄdna Y w ukÅadzie ortokartezjaÅskim
         Z : TYPE: FLOAT
-            Współrzędna Z w układzie ortokartezjańskim
+            WspÃ³ÅrzÄdna Z w ukÅadzie ortokartezjaÅskim
             
         Wynik:
         ----------
@@ -261,7 +264,7 @@ class Transformacje():
         f : TYPE: FLOAT
             Szerokokosc geodezyjna [stopnie]
         l: TYPE: FLOAT
-            Długosc geodezyjna [stopnie]
+            DÅugosc geodezyjna [stopnie]
         h : TYPE: FLOAT
             Wysokosc elipsoidalna [metry]
         
@@ -308,7 +311,7 @@ class Transformacje():
         if self.zapis == True:
             self.plik = open(self.nazwa, 'a')
             self.plik.write('--------------------------------------------------\n')
-            self.plik.write("f [° ' '']         l [° ' '']         h [m]\n")
+            self.plik.write("f [Â° ' '']         l [Â° ' '']         h [m]\n")
             self.plik.write('--------------------------------------------------\n')
             i = 0
             while i < len(f_st):
@@ -327,7 +330,7 @@ class Transformacje():
         d = int(x)
         m = int((x - d) *  60)
         s = (x - d - (m/60)) * 3600
-        return(f"{znak}{d:3d}°{m:2d}'{s:8.5f}''")
+        return(f"{znak}{d:3d}Â°{m:2d}'{s:8.5f}''")
 
     def __Np(self, f): #promien krzywizny w I wertykale
         a = self.a 
@@ -347,12 +350,13 @@ class Transformacje():
        
     def fl2PL2000(self,m0= 0.999923):
         '''
-        Funkcja przelicza współrzędne geodezyjne na współrzędne prostokątne układu 2000.
+        Funkcja przelicza wspÃ³ÅrzÄdne geodezyjne na wspÃ³ÅrzÄdne prostokÄ
+tne ukÅadu 2000.
 
         Parameters
         ----------
-        f : TYPE : [float] : Szerokość geodezyjna [stopnie]
-        l : TYPE : [float] : Długość geodezyjna [stopnie]
+        f : TYPE : [float] : SzerokoÅÄ geodezyjna [stopnie]
+        l : TYPE : [float] : DÅugoÅÄ geodezyjna [stopnie]
         
         m0 : TYPE, optional
             DESCRIPTION. The default is 0.999923.
@@ -364,8 +368,8 @@ class Transformacje():
 
         Returns
         -------
-        x2000 : TYPE : [float] : współrzędna X w układzie 2000 [metry]
-        y2000 : TYPE : [float] : współrzędna Y w układzie 2000 [metry]
+        x2000 : TYPE : [float] : wspÃ³ÅrzÄdna X w ukÅadzie 2000 [metry]
+        y2000 : TYPE : [float] : wspÃ³ÅrzÄdna Y w ukÅadzie 2000 [metry]
 
         '''
 
@@ -399,9 +403,9 @@ class Transformacje():
                     raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
             except NieprawidlowaWartosc as nw:
                 print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
-                      f'podana wartość l znajduje się poza zakresem stref odwzorowawcych układu współrzędnych PL2000. '
-                      f'Obsługiwany zakres to {nw.minimum}° - {nw.maksimum}° '
-                      f'Podana przez Ciebie wartość to {nw.liczba}')
+                      f'podana wartoÅÄ l znajduje siÄ poza zakresem stref odwzorowawcych ukÅadu wspÃ³ÅrzÄdnych PL2000. '
+                      f'ObsÅugiwany zakres to {nw.minimum}Â° - {nw.maksimum}Â° '
+                      f'Podana przez Ciebie wartoÅÄ to {nw.liczba}')
             else:         
                 b2 = a**2*(1 - e2)
                 ep2 = (a**2 - b2)/b2
@@ -434,12 +438,13 @@ class Transformacje():
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
-        Funkcja przelicza współrzędne geodezyjne na współrzędne prostokątne układu 1992.
+        Funkcja przelicza wspÃ³ÅrzÄdne geodezyjne na wspÃ³ÅrzÄdne prostokÄ
+tne ukÅadu 1992.
 
         Parameters
         ----------
-        f : TYPE : [float] : Szerokość geodezyjna [stopnie]
-        l : TYPE : [float] : Długość geodezyjna [stopnie]
+        f : TYPE : [float] : SzerokoÅÄ geodezyjna [stopnie]
+        l : TYPE : [float] : DÅugoÅÄ geodezyjna [stopnie]
         
         l0 : TYPE, optional
             DESCRIPTION. The default is radians(19).
@@ -448,8 +453,8 @@ class Transformacje():
 
         Returns
         -------
-        x1992 : TYPE : [float] : współrzędna X w układzie 1992 [metry]
-        y1992 : TYPE : [float] : współrzędna Y w układzie 1992 [metry]
+        x1992 : TYPE : [float] : wspÃ³ÅrzÄdna X w ukÅadzie 1992 [metry]
+        y1992 : TYPE : [float] : wspÃ³ÅrzÄdna Y w ukÅadzie 1992 [metry]
 
         '''
         a=self.a
@@ -507,7 +512,8 @@ class Transformacje():
         
     def xyz2neu(self):
         '''
-        Funckja obliczająca wektor w układzie NEU
+        Funckja obliczajÄ
+ca wektor w ukÅadzie NEU
         
         Parameters:
         -----------
@@ -521,7 +527,7 @@ class Transformacje():
         Returns
         -------
         NEU: TYPE : LIST 
-            Współrzedne topocentryczne (North , East (E), Up (U))
+            WspÃ³Årzedne topocentryczne (North , East (E), Up (U))
             
         '''
 
@@ -563,20 +569,24 @@ class Transformacje():
         
     def flh2xyz(self):
         '''
-        Funkcja przelicza ze współrzędnych krzywoliniowych na współrzędne prostokątne.
+        Funkcja przelicza ze wspÃ³ÅrzÄdnych krzywoliniowych na wspÃ³ÅrzÄdne prostokÄ
+tne.
         
         Parameters:
         ----------
         
-        phi - szerokość geograficzna punktu | typ: lista
-        lam - długość geograficzna punktu   | typ: lista
-        hel - wysokość punktu               | typ: float lub int
+        phi - szerokoÅÄ geograficzna punktu | typ: lista
+        lam - dÅugoÅÄ geograficzna punktu   | typ: lista
+        hel - wysokoÅÄ punktu               | typ: float lub int
 
         Returns
         -------
-        X - współrzędna prostokątna X punktu [metry] | typ: float
-        Y - współrzędna prostokątna Y punktu [metry] | typ: float
-        Z - współrzędna prostokątna Z punktu [metry] | typ: float
+        X - wspÃ³ÅrzÄdna prostokÄ
+tna X punktu [metry] | typ: float
+        Y - wspÃ³ÅrzÄdna prostokÄ
+tna Y punktu [metry] | typ: float
+        Z - wspÃ³ÅrzÄdna prostokÄ
+tna Z punktu [metry] | typ: float
 
         '''
         a = self.a 
@@ -715,8 +725,8 @@ class Transformacje():
         parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
         parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
         
-        parser.add_argument('-f', help="wartosc wspolrzednej f [° ' '']", required=False, type=str)
-        parser.add_argument('-l', help="wartosc wspolrzednej l [° ' '']", required=False, type=str)
+        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
+        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
         parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
 
         
@@ -725,6 +735,8 @@ class Transformacje():
         self.X = args.X
         self.Y = args.Y
         self.Z = args.Z
+        
+        self.H=args.H
               
         print("Podana wartosc X: ", args.X)
         print("Podana wartosc Y: ", args.Y)
