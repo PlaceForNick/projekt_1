@@ -56,7 +56,7 @@ class Transformacje():
         Z = args.Z
         f = args.f
         l = args.l
-        h = args.H
+        h = args.h
         zapis = args.zapis
         
         if   model  == 'kra':
@@ -734,6 +734,7 @@ tna Z punktu [metry] | typ: float
                                       '- XYZ2\n'
                                       '- flh\n'
                                       '- saz\n')
+
 
 if __name__=='__main__':
     
