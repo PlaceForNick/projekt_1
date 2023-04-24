@@ -709,49 +709,49 @@ class Transformacje():
     
 if __name__=='__main__':
     
-    proba1 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=3782450,
-                            Y=1085030,
-                            Z=5003140,
-                            model='grs80',
-                            zapis=True)
+    # proba1 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=3782450,
+    #                         Y=1085030,
+    #                         Z=5003140,
+    #                         model='grs80',
+    #                         zapis=True)
     
-    print('\nflh2xyz\n', proba1.flh2xyz())
-    print('\nPL1992\n', proba1.fl2PL1992())
-    print('\nPL2000\n', proba1.fl2PL2000())
-    print('\nNEU\n', proba1.xyz2neu())
-    print('\nHIRVONEN\n', proba1.xyz2flh())
+    # print('\nflh2xyz\n', proba1.flh2xyz())
+    # print('\nPL1992\n', proba1.fl2PL1992())
+    # print('\nPL2000\n', proba1.fl2PL2000())
+    # print('\nNEU\n', proba1.xyz2neu())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    proba2 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=[3782450, 3782450],
-                            Y=[1085030, 1085030],
-                            Z=[5003140, 5003140],
-                            model='grs80')
+    # proba2 = Transformacje(f='52 0 5.72012',
+    #                         l='16 0 21.66234',
+    #                         h=289.08952781930566,
+    #                         s=43000.0,
+    #                         alfa=230,
+    #                         z=90,
+    #                         X=[3782450, 3782450],
+    #                         Y=[1085030, 1085030],
+    #                         Z=[5003140, 5003140],
+    #                         model='grs80')
     
-    print('\nflh2xyz\n', proba2.flh2xyz())
-    print('\nPL1992\n', proba2.fl2PL1992())
-    print('\nPL2000\n', proba2.fl2PL2000())
-    print('\nNEU\n', proba2.xyz2neu())
-    print('\nHIRVONEN\n', proba2.xyz2flh())
+    # print('\nflh2xyz\n', proba2.flh2xyz())
+    # print('\nPL1992\n', proba2.fl2PL1992())
+    # print('\nPL2000\n', proba2.fl2PL2000())
+    # print('\nNEU\n', proba2.xyz2neu())
+    # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
-    # proba3.wczytajplik('test.txt', 'XYZ')
-    proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    proba3.wczytajplik('test.txt', 'saz', nr = 6)
+    proba3.wczytajplik('test.txt', 'XYZ')
+    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    # proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    print('\nflh2xyz\n', proba3.flh2xyz())
+    # print('\nflh2xyz\n', proba3.flh2xyz())
     print('\nPL1992\n', proba3.fl2PL1992())
     print('\nPL2000\n', proba3.fl2PL2000())
-    print('\nNEU\n', proba3.xyz2neu())
+    # print('\nNEU\n', proba3.xyz2neu())
     # print('\nHIRVONEN\n', proba3.xyz2flh())
    
