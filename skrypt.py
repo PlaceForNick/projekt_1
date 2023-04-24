@@ -38,27 +38,47 @@ class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         
-        parser = argparse.ArgumentParser(description='opis skryptu')
+        parser = argparse.ArgumentParser(description='Transformacje wspolrzednych')
         
-        parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
-        parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
-        parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
+        parser.add_argument('-X', help='wartosc wspolrzednej pierwszegi punktu X [m]', required=False, type=float)
+        parser.add_argument('-Y', help='wartosc wspolrzednej pierwszego punktu Y [m]', required=False, type=float)
+        parser.add_argument('-Z', help='wartosc wspolrzednej pierwszego punktu Z [m]', required=False, type=float)
+        parser.add_argument('--model', choices=['grs80','wgs84', 'kra'],help='model elipsoidy', required=False, type=str)
+        parser.add_argument('-X2', help='wartosc wspolrzednej drugiego punktu X [m]', required=False, type=float)
+        parser.add_argument('-Y2', help='wartosc wspolrzednej drugiego punktu Y [m]', required=False, type=float)
+        parser.add_argument('-Z2', help='wartosc wspolrzednej drugiego punktu Z [m]', required=False, type=float)
+        parser.add_argument('-s', help='wartosc dlugosci miedzy dwoma punktami [m]', required=False, type=float)
+        parser.add_argument('-alfa', help="wartosc kat poziomego [Â° ' '']", required=False, type=float)
+        parser.add_argument('-z', help="wartosc kat zenitalnego [Â° ' '']", required=False, type=float)
+        
         
         parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
         parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
         parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
-
+        
+        parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str)
         parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool)
         args = parser.parse_args()
         
         X = args.X
         Y = args.Y
         Z = args.Z
+        X2 = args.X2
+        Y2 = args.Y2
+        Z2 = args.Z2
+        s= args.s
+        alfa=args.alfa
+        z= args.z
         f = args.f
         l = args.l
-        h = args.h
-        zapis = args.zapis
+        h = args.H
         
+        zapis = args.zapis
+        model = args.model
+        metoda= args.metoda
+        # if metoda=='xyz2flh':
+        #     print(self.xyz2flh())
+        # print(f, type(f))
         if   model  == 'kra':
             self.a= 6378245
             self.b= 6356863.01877
@@ -69,7 +89,7 @@ class Transformacje():
             self.a = 6378137.0
             self.b = 6356752.31414036
         else:
-            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obslugiwany")
+            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obslugiwany")
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         # print(model,self.b)
@@ -233,6 +253,23 @@ class Transformacje():
             except TypeError:
                 break
         self.z = z_ost
+        
+        print(f)
+        
+        if metoda=='xyz2flh':
+            print(self.xyz2flh())
+        elif metoda=='flh2xyz':
+            print(self.flh2xyz())
+        elif metoda=='pl2000':
+            print(self.fl2PL2000())
+        elif metoda=='pl1992':
+            print(self.fl2PL1992())
+        elif metoda=='neu':
+            print(self.xyz2neu())
+        else:
+            raise NotImplementedError(f"{metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
+        
+        
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
@@ -484,7 +521,7 @@ tnych) x, y, z
         
         while i < (len(self.f) or len(self.X)):
         
-            if self.f == [''] or self.l == ['']:
+            if self.f == ['None'] or self.l == ['None']:
                 self.xyz2flh()
             f = self.f[i]
             l = self.l[i]
@@ -784,7 +821,7 @@ if __name__=='__main__':
     # print('\nNEU\n', proba3.xyz2neu())
     # # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-    proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
+     proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
     # proba4.wczytajzargparse() # <-- podanie argumentów z argpase
-    proba4.xyz2flh() # <-- wywołanie metody i obliczenie
+    #print(proba4.xyz2flh()) # <-- wywołanie metody i obliczenie
     
