@@ -43,11 +43,13 @@ class Transformacje():
         parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
         parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
         parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
+        parser.add_argument('--model', choices=['grs80','wgs84', 'kra'],help='model elipsoidy', required=False, type=str)
         
         parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
         parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
         parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
-
+        
+        parser.add_argument('--metoda', help='wartosc wspolrzednej H [m]', required=False, type=str)
         parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool)
         args = parser.parse_args()
         
@@ -58,6 +60,10 @@ class Transformacje():
         l = args.l
         h = args.H
         zapis = args.zapis
+        model = args.model
+        metoda= args.metoda
+        # if metoda=='xyz2flh':
+        #     print(self.xyz2flh())
         
         if   model  == 'kra':
             self.a= 6378245
@@ -233,6 +239,13 @@ class Transformacje():
             except TypeError:
                 break
         self.z = z_ost
+        
+        
+        
+        if metoda=='xyz2flh':
+            print(self.xyz2flh())
+        elif metoda=='flh2xyz':
+            print(self.flh2xyz())
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
@@ -783,7 +796,7 @@ if __name__=='__main__':
     # print('\nNEU\n', proba3.xyz2neu())
     # # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-    proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
+     proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
     # proba4.wczytajzargparse() # <-- podanie argumentów z argpase
-    print(proba4.xyz2flh()) # <-- wywołanie metody i obliczenie
+    #print(proba4.xyz2flh()) # <-- wywołanie metody i obliczenie
     
