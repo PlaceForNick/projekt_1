@@ -1,4 +1,4 @@
-# import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> moÅ¼e trzeba pip install???
+import numpy as np #PRZY WYKONYWANIU PLIKU Z KONSOLI NIE WIDZI NUMPY!!! -> moÅ¼e trzeba pip install???
 from math import *
 import os
 import argparse
@@ -18,11 +18,11 @@ class Style():
     Reset = '\033[0m'
     
 class NieprawidlowaWartosc(Exception):
-    '''Błąd oznaczający podanie niepoprawnej lub/i nieobsługiwanej przez program wartoci.
+    '''Blad oznaczajacy podanie niepoprawnej lub/i nieobslugiwanej przez program wartosci.
     
-        liczba - bÅÄdna wartoÅÄ podana przez uÅ¼ytkowanika
-        minimum - (opcjonalnie) - minimalna wymagana wartoÅÄ
-        maksimum - (opcjonalnie) - maksymalna wymagana wartoÅÄ
+        liczba - bledna wartoÅsc podana przez uzytkowanika
+        minimum - (opcjonalnie) - minimalna wymagana wartosc
+        maksimum - (opcjonalnie) - maksymalna wymagana wartosc
         '''
     def __init__(self, liczba, minimum = 'brak', maksimum = 'brak'):
         Exception.__init__(self)
@@ -38,6 +38,27 @@ class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
         
+        parser = argparse.ArgumentParser(description='opis skryptu')
+        
+        parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
+        parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
+        parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
+        
+        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
+        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
+        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
+
+        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool)
+        args = parser.parse_args()
+        
+        X = args.X
+        Y = args.Y
+        Z = args.Z
+        f = args.f
+        l = args.l
+        h = args.H
+        zapis = args.zapis
+        
         if   model  == 'kra':
             self.a= 6378245
             self.b= 6356863.01877
@@ -48,7 +69,7 @@ class Transformacje():
             self.a = 6378137.0
             self.b = 6356752.31414036
         else:
-            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obsÅugiwany")
+            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obslugiwany")
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         # print(model,self.b)
@@ -62,8 +83,8 @@ class Transformacje():
         elif zapis == False:
             self.zapis = zapis
         else:
-            raise NotImplementedError(f'Podana przez Ciebie wartoÅÄ zapis "{zapis}" jest nieprawidÅowa. Wybierz jedna z podanych ponizej wartosci:'
-                                      '- False'
+            raise NotImplementedError(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
+                                      '- False\n'
                                       '- True')
         if type(X) == list:
             self.X = X
@@ -215,7 +236,7 @@ class Transformacje():
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
-        Funkcja przelicza wartosc kÄ
+        Funkcja przelicza wartosc ka
 ta z stopni na radiany
         
         Argumenty
@@ -231,7 +252,7 @@ ta z stopni na radiany
         znak = 1
         if X[0] == '-':
              znak = -1
-        Y = X.split(' ' or '"' or "'" or 'Â°' or '-')
+        Y = X.split(' ' or '"' or "'" or '°' or '-')
         d = int(Y[0])
         m = int(Y[1])
         s = float(Y[2])
@@ -244,19 +265,19 @@ ta z stopni na radiany
         
     def xyz2flh(self): #HIRVONEN
         '''
-        Funkcja sÅuÅ¼Ä
-ca do transformacji wspÃ³ÅrzÄdnych ortokartezjaÅskich (prostokÄ
+        Funkcja sluzaca
+ca do transformacji wspolrzednych ortokartezjanskich (prostoka
 tnych) x, y, z 
-        na wspÃ³ÅrzÄdne geodezyjne B, L, h.
+        na wspolrzedne geodezyjne B, L, h.
         
         Argumenty:
         ----------
         X : TYPE: FLOAT
-            WspÃ³ÅrzÄdna X w ukÅadzie ortokartezjaÅskim
+            Wspolrzedna X w ukladzie ortokartezjanskim
         Y : TYPE: FLOAT
-            WspÃ³ÅrzÄdna Y w ukÅadzie ortokartezjaÅskim
+            Wspolrzedna Y w ukladzie ortokartezjanskim
         Z : TYPE: FLOAT
-            WspÃ³ÅrzÄdna Z w ukÅadzie ortokartezjaÅskim
+            Wspolrzedna Z w ukladzie ortokartezjanskim
             
         Wynik:
         ----------
@@ -264,7 +285,7 @@ tnych) x, y, z
         f : TYPE: FLOAT
             Szerokokosc geodezyjna [stopnie]
         l: TYPE: FLOAT
-            DÅugosc geodezyjna [stopnie]
+            Dlugosc geodezyjna [stopnie]
         h : TYPE: FLOAT
             Wysokosc elipsoidalna [metry]
         
@@ -311,7 +332,7 @@ tnych) x, y, z
         if self.zapis == True:
             self.plik = open(self.nazwa, 'a')
             self.plik.write('--------------------------------------------------\n')
-            self.plik.write("f [Â° ' '']         l [Â° ' '']         h [m]\n")
+            self.plik.write("f [° ' '']         l [° ' '']         h [m]\n")
             self.plik.write('--------------------------------------------------\n')
             i = 0
             while i < len(f_st):
@@ -330,7 +351,7 @@ tnych) x, y, z
         d = int(x)
         m = int((x - d) *  60)
         s = (x - d - (m/60)) * 3600
-        return(f"{znak}{d:3d}Â°{m:2d}'{s:8.5f}''")
+        return(f"{znak}{d:3d}°{m:2d}'{s:8.5f}''")
 
     def __Np(self, f): #promien krzywizny w I wertykale
         a = self.a 
@@ -350,13 +371,12 @@ tnych) x, y, z
        
     def fl2PL2000(self,m0= 0.999923):
         '''
-        Funkcja przelicza wspÃ³ÅrzÄdne geodezyjne na wspÃ³ÅrzÄdne prostokÄ
-tne ukÅadu 2000.
+        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 2000.
 
         Parameters
         ----------
-        f : TYPE : [float] : SzerokoÅÄ geodezyjna [stopnie]
-        l : TYPE : [float] : DÅugoÅÄ geodezyjna [stopnie]
+        f : TYPE : [float] : SzerokoÅsc geodezyjna [stopnie]
+        l : TYPE : [float] : Dlugosc geodezyjna [stopnie]
         
         m0 : TYPE, optional
             DESCRIPTION. The default is 0.999923.
@@ -368,8 +388,8 @@ tne ukÅadu 2000.
 
         Returns
         -------
-        x2000 : TYPE : [float] : wspÃ³ÅrzÄdna X w ukÅadzie 2000 [metry]
-        y2000 : TYPE : [float] : wspÃ³ÅrzÄdna Y w ukÅadzie 2000 [metry]
+        x2000 : TYPE : [float] : Wspolrzedna X w ukladzie 2000 [metry]
+        y2000 : TYPE : [float] : Wspolrzedna Y w ukladzie 2000 [metry]
 
         '''
 
@@ -403,9 +423,9 @@ tne ukÅadu 2000.
                     raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
             except NieprawidlowaWartosc as nw:
                 print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
-                      f'podana wartoÅÄ l znajduje siÄ poza zakresem stref odwzorowawcych ukÅadu wspÃ³ÅrzÄdnych PL2000. '
-                      f'ObsÅugiwany zakres to {nw.minimum}Â° - {nw.maksimum}Â° '
-                      f'Podana przez Ciebie wartoÅÄ to {nw.liczba}')
+                      f'podana wartosc l znajduje sie poza zakresem stref odwzorowawcych ukladu wspolrzednych PL2000. '
+                      f'Obslugiwany zakres to {nw.minimum}° - {nw.maksimum}° '
+                      f'Podana przez Ciebie wartosc to {nw.liczba}')
             else:         
                 b2 = a**2*(1 - e2)
                 ep2 = (a**2 - b2)/b2
@@ -438,13 +458,12 @@ tne ukÅadu 2000.
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
-        Funkcja przelicza wspÃ³ÅrzÄdne geodezyjne na wspÃ³ÅrzÄdne prostokÄ
-tne ukÅadu 1992.
+        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 1992.
 
         Parameters
         ----------
-        f : TYPE : [float] : SzerokoÅÄ geodezyjna [stopnie]
-        l : TYPE : [float] : DÅugoÅÄ geodezyjna [stopnie]
+        f : TYPE : [float] : Szerokosc geodezyjna [stopnie]
+        l : TYPE : [float] : Dlugosc geodezyjna [stopnie]
         
         l0 : TYPE, optional
             DESCRIPTION. The default is radians(19).
@@ -453,8 +472,8 @@ tne ukÅadu 1992.
 
         Returns
         -------
-        x1992 : TYPE : [float] : wspÃ³ÅrzÄdna X w ukÅadzie 1992 [metry]
-        y1992 : TYPE : [float] : wspÃ³ÅrzÄdna Y w ukÅadzie 1992 [metry]
+        x1992 : TYPE : [float] : wspolrzedna X w ukladzie 1992 [metry]
+        y1992 : TYPE : [float] : wspolrzedne Y w ukladzie 1992 [metry]
 
         '''
         a=self.a
@@ -512,7 +531,7 @@ tne ukÅadu 1992.
         
     def xyz2neu(self):
         '''
-        Funckja obliczajÄ
+        Funckja obliczaja
 ca wektor w ukÅadzie NEU
         
         Parameters:
@@ -527,7 +546,7 @@ ca wektor w ukÅadzie NEU
         Returns
         -------
         NEU: TYPE : LIST 
-            WspÃ³Årzedne topocentryczne (North , East (E), Up (U))
+            Wspolrzedne topocentryczne (North , East (E), Up (U))
             
         '''
 
@@ -569,23 +588,21 @@ ca wektor w ukÅadzie NEU
         
     def flh2xyz(self):
         '''
-        Funkcja przelicza ze wspÃ³ÅrzÄdnych krzywoliniowych na wspÃ³ÅrzÄdne prostokÄ
-tne.
+        Funkcja przelicza ze wspolrzednych krzywoliniowych na wspolrzedne prostokatne.
         
         Parameters:
         ----------
         
-        phi - szerokoÅÄ geograficzna punktu | typ: lista
-        lam - dÅugoÅÄ geograficzna punktu   | typ: lista
-        hel - wysokoÅÄ punktu               | typ: float lub int
+        phi - szerokosc geograficzna punktu | typ: lista
+        lam - dlugosc geograficzna punktu   | typ: lista
+        hel - wysokosc punktu               | typ: float lub int
 
         Returns
         -------
-        X - wspÃ³ÅrzÄdna prostokÄ
+        X - wspolrzedna prostoka
 tna X punktu [metry] | typ: float
-        Y - wspÃ³ÅrzÄdna prostokÄ
-tna Y punktu [metry] | typ: float
-        Z - wspÃ³ÅrzÄdna prostokÄ
+        Y - wspolrzedna prostokatna Y punktu [metry] | typ: float
+        Z - wspolrzedna prostoka
 tna Z punktu [metry] | typ: float
 
         '''
@@ -717,30 +734,6 @@ tna Z punktu [metry] | typ: float
                                       '- XYZ2\n'
                                       '- flh\n'
                                       '- saz\n')
-    def wczytajzargparse(self):
-    
-        parser = argparse.ArgumentParser(description='opis skryptu')
-                
-        parser.add_argument('-X', help='wartosc wspolrzednej X [m]', required=False, type=float)
-        parser.add_argument('-Y', help='wartosc wspolrzednej Y [m]', required=False, type=float)
-        parser.add_argument('-Z', help='wartosc wspolrzednej Z [m]', required=False, type=float)
-        
-        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
-        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
-        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
-
-        
-        args = parser.parse_args()
-              
-        self.X = args.X
-        self.Y = args.Y
-        self.Z = args.Z
-        
-        self.H=args.H
-              
-        print("Podana wartosc X: ", args.X)
-        print("Podana wartosc Y: ", args.Y)
-        print("Podana wartosc Z: ", args.Z)
 
 if __name__=='__main__':
     
@@ -790,6 +783,7 @@ if __name__=='__main__':
     # print('\nNEU\n', proba3.xyz2neu())
     # # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-    proba4 = Transformacje()
-    proba4.wczytajzargparse()
+    proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
+    # proba4.wczytajzargparse() # <-- podanie argumentów z argpase
+    print(proba4.xyz2flh()) # <-- wywołanie metody i obliczenie
     
