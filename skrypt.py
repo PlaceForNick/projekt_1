@@ -40,38 +40,85 @@ class Transformacje():
         
         parser = argparse.ArgumentParser(description='Transformacje wspolrzednych')
         
-        parser.add_argument('-X', help='wartosc wspolrzednej pierwszegi punktu X [m]', required=False, type=float)
-        parser.add_argument('-Y', help='wartosc wspolrzednej pierwszego punktu Y [m]', required=False, type=float)
-        parser.add_argument('-Z', help='wartosc wspolrzednej pierwszego punktu Z [m]', required=False, type=float)
-        parser.add_argument('--model', choices=['grs80','wgs84', 'kra'],help='model elipsoidy', required=False, type=str)
-        parser.add_argument('-X2', help='wartosc wspolrzednej drugiego punktu X [m]', required=False, type=float)
-        parser.add_argument('-Y2', help='wartosc wspolrzednej drugiego punktu Y [m]', required=False, type=float)
-        parser.add_argument('-Z2', help='wartosc wspolrzednej drugiego punktu Z [m]', required=False, type=float)
-        parser.add_argument('-s', help='wartosc dlugosci miedzy dwoma punktami [m]', required=False, type=float)
-        parser.add_argument('-alfa', help="wartosc kat poziomego [Â° ' '']", required=False, type=float)
-        parser.add_argument('-z', help="wartosc kat zenitalnego [Â° ' '']", required=False, type=float)
+        parser.add_argument('-X', help='wartosc wspolrzednej pierwszegi punktu X [m]', required=False, default='')
+        parser.add_argument('-Y', help='wartosc wspolrzednej pierwszego punktu Y [m]', required=False, default='')
+        parser.add_argument('-Z', help='wartosc wspolrzednej pierwszego punktu Z [m]', required=False, default='')
+        parser.add_argument('--model', choices=['grs80','wgs84', 'kra'],help='model elipsoidy', required=False, type=str, default='grs80')
+        parser.add_argument('-X2', help='wartosc wspolrzednej drugiego punktu X [m]', required=False, default='')
+        parser.add_argument('-Y2', help='wartosc wspolrzednej drugiego punktu Y [m]', required=False, default='')
+        parser.add_argument('-Z2', help='wartosc wspolrzednej drugiego punktu Z [m]', required=False, default='')
+        parser.add_argument('-s', help='wartosc dlugosci miedzy dwoma punktami [m]', required=False, default='')
+        parser.add_argument('-alfa', help="wartosc kat poziomego [Â° ' '']", required=False, default='')
+        parser.add_argument('-z', help="wartosc kat zenitalnego [Â° ' '']", required=False, default='')
         
         
-        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, type=str)
-        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, type=str)
-        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, type=float)
+        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, default='')
+        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, default='')
+        parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, default='')
         
-        parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str)
-        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool)
+        parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str, default='')
+        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', required=False, type=bool, default='False')
         args = parser.parse_args()
         
-        X = args.X
-        Y = args.Y
-        Z = args.Z
-        X2 = args.X2
-        Y2 = args.Y2
-        Z2 = args.Z2
-        s= args.s
-        alfa=args.alfa
-        z= args.z
-        f = args.f
-        l = args.l
-        h = args.H
+        try:
+            X = float(args.X)
+        except ValueError:
+            X = args.X
+            
+        try:
+            Y = float(args.Y)
+        except ValueError:   
+            Y = args.Y
+        
+        try:
+            Z = float(args.Z)
+        except ValueError:
+            Z = args.Z
+        
+        try:
+            X2 = float(args.X2)
+        except ValueError:
+            X2 = args.X2
+            
+        try:
+            Y2 = float(args.Y2)
+        except ValueError:
+            Y2 = args.Y2
+            
+        try:
+            Z2 = float(args.Z2)
+        except ValueError:
+            Z2 = args.Z2
+        
+        try:
+            s = float(args.s)
+        except ValueError:
+            s = args.s
+            
+        try:
+            alfa = float(args.alfa)
+        except ValueError:
+            alfa = args.alfa
+        
+        try:
+            z = float(args.z)
+        except ValueError:
+            z= args.z
+        
+        try:
+            f = float(args.f)
+        except ValueError:
+            f = args.f
+            
+        try:
+            l = float(args.l)
+        except ValueError:
+            l = args.l
+        
+        try:
+            h = float(args.H)
+        except ValueError:
+            h = args.H
         
         zapis = args.zapis
         model = args.model
@@ -129,13 +176,13 @@ class Transformacje():
         else:
             self.f = []
             (self.f).append(f)
-        
+            
         if type(l) == list:
             self.l = l
         else:
             self.l = []
             (self.l).append(l)
-        
+            
         if type(h) == list:
             self.h = h
         else:
@@ -193,8 +240,8 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            except TypeError:
-                break
+            # except TypeError:
+                # break
         self.f = f_ost
         
         l_ost = []
@@ -212,8 +259,8 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            except TypeError:
-                break
+            # except TypeError:
+            #     break
         self.l = l_ost
         
         alfa_ost = []
@@ -231,8 +278,8 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            except TypeError:
-                break                
+            # except TypeError:
+            #     break                
         self.alfa = alfa_ost
         
         z_ost = []
@@ -250,8 +297,8 @@ class Transformacje():
                 i += 1
             except IndexError:
                 break
-            except TypeError:
-                break
+            # except TypeError:
+            #     break
         self.z = z_ost
         
         print(f)
@@ -520,8 +567,7 @@ tnych) x, y, z
         i = 0
         
         while i < (len(self.f) or len(self.X)):
-        
-            if self.f == ['None'] or self.l == ['None']:
+            if self.f[i] =='' or self.l[i] =='':
                 self.xyz2flh()
             f = self.f[i]
             l = self.l[i]
@@ -775,53 +821,52 @@ tna Z punktu [metry] | typ: float
 
 if __name__=='__main__':
     
-    # proba1 = Transformacje(f='52 0 5.72012',
-    #                         l='16 0 21.66234',
-    #                         h=289.08952781930566,
-    #                         s=43000.0,
-    #                         alfa=230,
-    #                         z=90,
-    #                         X=3782450,
-    #                         Y=1085030,
-    #                         Z=5003140,
-    #                         model='grs80',
-    #                         zapis=True)
+    proba1 = Transformacje(f='52 0 5.72012',
+                            l='16 0 21.66234',
+                            h=289.08952781930566,
+                            s=43000.0,
+                            alfa=230,
+                            z=90,
+                            X=3782450,
+                            Y=1085030,
+                            Z=5003140,
+                            model='grs80',
+                            zapis=True)
     
-    # print('\nflh2xyz\n', proba1.flh2xyz())
-    # print('\nPL1992\n', proba1.fl2PL1992())
-    # print('\nPL2000\n', proba1.fl2PL2000())
-    # print('\nNEU\n', proba1.xyz2neu())
-    # print('\nHIRVONEN\n', proba1.xyz2flh())
+    print('\nflh2xyz\n', proba1.flh2xyz())
+    print('\nPL1992\n', proba1.fl2PL1992())
+    print('\nPL2000\n', proba1.fl2PL2000())
+    print('\nNEU\n', proba1.xyz2neu())
+    print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    # proba2 = Transformacje(f='52 0 5.72012',
-    #                         l='16 0 21.66234',
-    #                         h=289.08952781930566,
-    #                         s=43000.0,
-    #                         alfa=230,
-    #                         z=90,
-    #                         X=[3782450, 3782450],
-    #                         Y=[1085030, 1085030],
-    #                         Z=[5003140, 5003140],
-    #                         model='grs80')
+    proba2 = Transformacje(f='52 0 5.72012',
+                            l='16 0 21.66234',
+                            h=289.08952781930566,
+                            s=43000.0,
+                            alfa=230,
+                            z=90,
+                            X=[3782450, 3782450],
+                            Y=[1085030, 1085030],
+                            Z=[5003140, 5003140],
+                            model='grs80')
     
-    # print('\nflh2xyz\n', proba2.flh2xyz())
-    # print('\nPL1992\n', proba2.fl2PL1992())
-    # print('\nPL2000\n', proba2.fl2PL2000())
-    # print('\nNEU\n', proba2.xyz2neu())
-    # print('\nHIRVONEN\n', proba2.xyz2flh())
+    print('\nflh2xyz\n', proba2.flh2xyz())
+    print('\nPL1992\n', proba2.fl2PL1992())
+    print('\nPL2000\n', proba2.fl2PL2000())
+    print('\nNEU\n', proba2.xyz2neu())
+    print('\nHIRVONEN\n', proba2.xyz2flh())
     
-    # proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
-    # # proba3.wczytajplik('test.txt', 'XYZ')
-    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    # proba3.wczytajplik('test.txt', 'saz', nr = 6)
+    proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
+    # proba3.wczytajplik('test.txt', 'XYZ')
+    proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    # print('\nflh2xyz\n', proba3.flh2xyz())
-    # print('\nPL1992\n', proba3.fl2PL1992())
-    # print('\nPL2000\n', proba3.fl2PL2000())
-    # print('\nNEU\n', proba3.xyz2neu())
-    # # print('\nHIRVONEN\n', proba3.xyz2flh())
+    print('\nflh2xyz\n', proba3.flh2xyz())
+    print('\nPL1992\n', proba3.fl2PL1992())
+    print('\nPL2000\n', proba3.fl2PL2000())
+    print('\nNEU\n', proba3.xyz2neu())
+    # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-     proba4 = Transformacje(nazwa='output3') # <-- wywołanie klasy
-    # proba4.wczytajzargparse() # <-- podanie argumentów z argpase
-    #print(proba4.xyz2flh()) # <-- wywołanie metody i obliczenie
+    proba4 = Transformacje()
+
     
