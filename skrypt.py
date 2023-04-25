@@ -1,39 +1,13 @@
 import numpy as np
 from math import *
-import os
 import argparse
-
-os.system("")
-
-class Style():
-    Black = '\033[30m'
-    Red = '\033[31m'
-    Green = '\033[32m'
-    Yellow = '\033[33m'
-    Blue = '\033[34m'
-    Magenta = '\033[35m'
-    Cyan = '\033[36m'
-    White = '\033[37m'
-    Underline = '\033[4m'
-    Reset = '\033[0m'
-    
+  
 class NieprawidlowaWartosc(Exception):
-    '''Blad oznaczajacy podanie niepoprawnej lub/i nieobslugiwanej przez program wartosci.
-    
-        liczba - bledna wartoÅsc podana przez uzytkowanika
-        minimum - (opcjonalnie) - minimalna wymagana wartosc
-        maksimum - (opcjonalnie) - maksymalna wymagana wartosc
-        '''
-    def __init__(self, liczba, minimum = 'brak', maksimum = 'brak'):
-        Exception.__init__(self)
-        self.liczba = liczba
-        self.minimum  = minimum
-        self.maksimum = maksimum
-
-
-
-
-
+    pass
+    '''
+    Blad oznaczajacy podanie niepoprawnej lub/i nieobslugiwanej przez program wartosci.
+    '''
+        
 class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
@@ -48,7 +22,7 @@ class Transformacje():
             self.a = 6378137.0
             self.b = 6356752.31414036
         else:
-            raise NotImplementedError(f"{model} ten model elipsoidy nie jest obslugiwany")
+            raise NieprawidlowaWartosc(f"{model} ten model elipsoidy nie jest obslugiwany")
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         
@@ -60,7 +34,7 @@ class Transformacje():
         elif zapis == False:
             self.zapis = zapis
         else:
-            raise NotImplementedError(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
+            raise NieprawidlowaWartosc(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
                                       '- False\n'
                                       '- True')
         if type(X) == list:
@@ -217,7 +191,7 @@ class Transformacje():
             elif self.metoda == '':
                 pass
             else:
-                raise NotImplementedError(f"{self.metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
+                raise NieprawidlowaWartosc(f"{self.metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
         except AttributeError:
             pass
         
@@ -395,42 +369,38 @@ tnych) x, y, z
             f = self.f[i]
             l = self.l[i]
 
-            try:
-                if l < radians(16.5) and l > radians(13.5): #ns = 5
-                    l0 = radians(15)
-                    ns = 5
-                elif l < radians(19.5) and l > radians(16.5): #ns = 6
-                    l0 = radians(18)
-                    ns = 6
-                elif l < radians(22.5) and l > radians(19.5): #ns = 7
-                    l0 = radians(21)
-                    ns = 7
-                elif l < radians(25.5) and l > radians(22.5): #ns = 8
-                    l0 = radians(24)
-                    ns = 8
-                else:
-                    raise NieprawidlowaWartosc(self.__dms(l), minimum = 13.5, maksimum = 25.5)
-            except NieprawidlowaWartosc as nw:
-                print(Style.Red + 'NieprawidlowaWartosc: ' + Style.Reset + #Style.Underline +
-                      f'podana wartosc l znajduje sie poza zakresem stref odwzorowawcych ukladu wspolrzednych PL2000. '
-                      f'Obslugiwany zakres to {nw.minimum}° - {nw.maksimum}° '
-                      f'Podana przez Ciebie wartosc to {nw.liczba}')
-            else:         
-                b2 = a**2*(1 - e2)
-                ep2 = (a**2 - b2)/b2
-                dl = l - l0
-                t = tan(f)
-                n2 = ep2 * cos(f)**2
-                N = self.__Np(f)
-                sigm = self.__sigma(f)
-                xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
-                ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
-                x2000 = xgk * m0
-                y2000 = ygk * m0 + ns * 1000000 + 500000
+            if l < radians(16.5) and l > radians(13.5): #ns = 5
+                l0 = radians(15)
+                ns = 5
+            elif l < radians(19.5) and l > radians(16.5): #ns = 6
+                l0 = radians(18)
+                ns = 6
+            elif l < radians(22.5) and l > radians(19.5): #ns = 7
+                l0 = radians(21)
+                ns = 7
+            elif l < radians(25.5) and l > radians(22.5): #ns = 8
+                l0 = radians(24)
+                ns = 8
+            else:
+                raise NieprawidlowaWartosc(f'podana wartosc l znajduje sie poza zakresem stref odwzorowawcych ukladu wspolrzednych PL2000. '
+                                           f'Obslugiwany zakres to {13.5}° - {25.5}° '
+                                           f'Podana przez Ciebie wartosc to {self.__dms(l)}')
+       
+            b2 = a**2*(1 - e2)
+            ep2 = (a**2 - b2)/b2
+            dl = l - l0
+            t = tan(f)
+            n2 = ep2 * cos(f)**2
+            N = self.__Np(f)
+            sigm = self.__sigma(f)
+            xgk = sigm + (dl**2/2) * N * sin(f)*cos(f)*(1 + (dl**2/12)*cos(f)**2*(5-t**2+9*n2+4*n2**2)+ ((dl**4)/360)*cos(f)**4*(61 - 58*t**2 + t**4 + 270*n2 - 330*n2*t**2))
+            ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
+            x2000 = xgk * m0
+            y2000 = ygk * m0 + ns * 1000000 + 500000
                 
-                x_ost.append(x2000)
-                y_ost.append(y2000)
-                i += 1
+            x_ost.append(x2000)
+            y_ost.append(y2000)
+            i += 1
         
         if self.zapis == True:
             self.plik = open(self.nazwa, 'a')
@@ -717,7 +687,7 @@ tna Z punktu [metry] | typ: float
                     (self.z).append(self.__fromdms(j[nr + 2]))
         
         else:
-            raise NotImplementedError(f'Podany przez Ciebie typ danych "{typ}" jest nieporawny. Wybierz jedna z podanych ponizej wartosci:\n'
+            raise NieprawidlowaWartosc(f'Podany przez Ciebie typ danych "{typ}" jest nieporawny. Wybierz jedna z podanych ponizej wartosci:\n'
                                       '- XYZ\n'
                                       '- XYZ2\n'
                                       '- flh\n'
@@ -819,39 +789,39 @@ tna Z punktu [metry] | typ: float
     
 if __name__=='__main__':
     
-    # proba1 = Transformacje(f='52 0 5.72012',
-    #                         l='16 0 21.66234',
-    #                         h=289.08952781930566,
-    #                         s=43000.0,
-    #                         alfa=230,
-    #                         z=90,
-    #                         X=3782450,
-    #                         Y=1085030,
-    #                         Z=5003140,
-    #                         model='grs80',
-    #                         zapis=True)
+    proba1 = Transformacje(f='52 0 5.72012',
+                            l='16 0 21.66234',
+                            h=289.08952781930566,
+                            s=43000.0,
+                            alfa=230,
+                            z=90,
+                            X=3782450,
+                            Y=1085030,
+                            Z=5003140,
+                            model='grs80',
+                            zapis=True)
     
-    # print('\nflh2xyz\n', proba1.flh2xyz())
-    # print('\nPL1992\n', proba1.fl2PL1992())
-    # print('\nPL2000\n', proba1.fl2PL2000())
-    # print('\nNEU\n', proba1.xyz2neu())
-    # print('\nHIRVONEN\n', proba1.xyz2flh())
+    print('\nflh2xyz\n', proba1.flh2xyz())
+    print('\nPL1992\n', proba1.fl2PL1992())
+    print('\nPL2000\n', proba1.fl2PL2000())
+    print('\nNEU\n', proba1.xyz2neu())
+    print('\nHIRVONEN\n', proba1.xyz2flh())
 
-    # proba2 = Transformacje(f='52 0 5.72012',
-    #                         l='16 0 21.66234',
-    #                         h=289.08952781930566,
-    #                         s=43000.0,
-    #                         alfa=230,
-    #                         z=90,
-    #                         X=[3782450, 3782450],
-    #                         Y=[1085030, 1085030],
-    #                         Z=[5003140, 5003140],
-    #                         model='grs80')
+    proba2 = Transformacje(f='52 0 5.72012',
+                            l='16 0 21.66234',
+                            h=289.08952781930566,
+                            s=43000.0,
+                            alfa=230,
+                            z=90,
+                            X=[3782450, 3782450],
+                            Y=[1085030, 1085030],
+                            Z=[5003140, 5003140],
+                            model='grs80')
     
-    # print('\nflh2xyz\n', proba2.flh2xyz())
-    # print('\nPL1992\n', proba2.fl2PL1992())
-    # print('\nPL2000\n', proba2.fl2PL2000())
-    # print('\nNEU\n', proba2.xyz2neu())
+    print('\nflh2xyz\n', proba2.flh2xyz())
+    print('\nPL1992\n', proba2.fl2PL1992())
+    print('\nPL2000\n', proba2.fl2PL2000())
+    print('\nNEU\n', proba2.xyz2neu())
     # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
