@@ -10,9 +10,10 @@ class NieprawidlowaWartosc(Exception):
         
 class Transformacje():
         
-    def __init__(self, model='grs80', zapis=False, nazwa='output', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z = ''):
+    def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z =''):
 
-        if   model  == 'kra':
+        #wybor elipsoidy
+        if    model  == 'kra':
             self.a= 6378245
             self.b= 6356863.01877
         elif  model == "wgs84":
@@ -26,6 +27,7 @@ class Transformacje():
         self.splasz = (self.a - self.b) / self.a
         self.e2 = (2 * self.splasz - self.splasz ** 2)
         
+        #wybor zapisu do pliku txt
         if zapis == True:
             self.zapis = zapis
             self.nazwa = nazwa + '.txt'
@@ -37,146 +39,56 @@ class Transformacje():
             raise NieprawidlowaWartosc(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
                                       '- False\n'
                                       '- True')
-        if type(X) == list:
-            self.X = X
-        else:
-            self.X = []
-            (self.X).append(X)
         
-        if type(Y) == list:
-            self.Y = Y
-        else:
-            self.Y = []
-            (self.Y).append(Y)
+        #zamiana podanych danych na liste
+        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z]
+        dane_ost = []
+        for wartosc in dane:
+            if type(wartosc) == list:
+                wartosc_lista = wartosc
+            else:
+                wartosc_lista = []
+                wartosc_lista.append(wartosc)
+            dane_ost.append(wartosc_lista)
+        self.X = dane_ost[0]
+        self.Y = dane_ost[1]
+        self.Z = dane_ost[2]
+        self.f = dane_ost[3]
+        self.l = dane_ost[4]
+        self.h = dane_ost[5]
+        self.X2 = dane_ost[6]
+        self.Y2 = dane_ost[7]
+        self.Z2 = dane_ost[8]
+        self.s = dane_ost[9]
+        self.alfa = dane_ost[10]
+        self.z = dane_ost[11]
         
-        if type(Z) == list:
-            self.Z = Z
-        else:
-            self.Z = []
-            (self.Z).append(Z)
+        #zamiana stopni na radiany           
+        dane_kat = [self.f, self.l, self.alfa, self.z]
+        dane_kat_ost = []
+        for wartosc_lista in dane_kat:
+            wartosc_ost = []
+            i = 0  
+            while True:
+                try:
+                    wartosc = wartosc_lista[i]
+                    if wartosc =='':
+                        wartosc = wartosc
+                    elif type(wartosc) == str:
+                        wartosc = self.__fromdms(wartosc)
+                    else:
+                        wartosc = radians(wartosc)
+                    wartosc_ost.append(wartosc)
+                    i += 1
+                except IndexError:
+                    break
+            dane_kat_ost.append(wartosc_ost)
+        self.f = dane_kat_ost[0]
+        self.l = dane_kat_ost[1]
+        self.alfa = dane_kat_ost[2]
+        self.z = dane_kat_ost[3]
         
-        if type(f) == list:
-            self.f = f
-        else:
-            self.f = []
-            (self.f).append(f)
-            
-        if type(l) == list:
-            self.l = l
-        else:
-            self.l = []
-            (self.l).append(l)
-            
-        if type(h) == list:
-            self.h = h
-        else:
-            self.h = []
-            (self.h).append(h)
-            
-        if type(X2) == list:
-            self.X2 = X2
-        else:
-            self.X2 = []
-            (self.X2).append(X2)
-            
-        if type(Y2) == list:
-            self.Y2 = Y2
-        else:
-            self.Y2 = []
-            (self.Y2).append(Y2)
-        
-        if type(Z2) == list:
-            self.Z2 = Z2
-        else:
-            self.Z2 = []
-            (self.Z2).append(Z2)
-            
-        if type(s) == list:
-            self.s = s
-        else:
-            self.s = []
-            (self.s).append(s)
-        
-        if type(alfa) == list:
-            self.alfa = alfa
-        else:
-            self.alfa = []
-            (self.alfa).append(alfa)
-            
-        if type(z) == list:
-            self.z = z
-        else:
-            self.z = []
-            (self.z).append(z)
-                
-        f_ost = []
-        i = 0  
-        while True:
-            try:
-                f = self.f[i]
-                if f =='':
-                    f = f
-                elif type(f) == str:
-                    f = self.__fromdms(f)
-                else:
-                    f = radians(f)
-                f_ost.append(f)
-                i += 1
-            except IndexError:
-                break
-        self.f = f_ost
-        
-        l_ost = []
-        i = 0     
-        while True:
-            try:
-                l = self.l[i]
-                if l =='':
-                    l = l
-                elif type(l) == str:
-                    l = self.__fromdms(l)
-                else:
-                    l = radians(l)
-                l_ost.append(l)
-                i += 1
-            except IndexError:
-                break
-        self.l = l_ost
-        
-        alfa_ost = []
-        i = 0     
-        while True:
-            try:
-                alfa = self.alfa[i]           
-                if alfa =='':
-                    alfa = alfa
-                elif type(alfa) == str:
-                    alfa = self.__fromdms(alfa)
-                else:
-                    alfa = radians(alfa)
-                alfa_ost.append(alfa)
-                i += 1
-            except IndexError:
-                break              
-        self.alfa = alfa_ost
-        
-        z_ost = []
-        i = 0     
-        while True:
-            try:
-                z = self.z[i]
-                if z =='':
-                    z = z
-                elif type(z) == str:
-                    z =self.__fromdms(z)
-                else:
-                    z = radians(z)
-                z_ost.append(z)
-                i += 1
-            except IndexError:
-                break
-        self.z = z_ost
-        
+        #wybor metody dla argparse
         try:
             if self.metoda == 'xyz2flh':
                 print(self.xyz2flh())
@@ -193,9 +105,7 @@ class Transformacje():
             else:
                 raise NieprawidlowaWartosc(f"{self.metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
         except AttributeError:
-            pass
-        
-        
+            pass      
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
         '''
@@ -602,7 +512,7 @@ tna Z punktu [metry] | typ: float
     def wczytajplik(self, plik, typ, nr = 0):
         
         if typ == 'XYZ':
-            dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
+            dane = np.genfromtxt(plik, delimiter=',', skip_header = 4)
             self.X = []
             self.Y = []
             self.Z = []
@@ -612,7 +522,7 @@ tna Z punktu [metry] | typ: float
                 (self.Z).append(j[nr + 2])
                 
         elif typ == 'XYZ2':
-            dane = np.genfromtxt(plik, delimiter=',')#, skip_header = 4)
+            dane = np.genfromtxt(plik, delimiter=',', skip_header = 4)
             self.X2 = []
             self.Y2 = []
             self.Z2 = []
@@ -623,7 +533,7 @@ tna Z punktu [metry] | typ: float
             
                 
         elif typ == 'flh':
-            dane = np.genfromtxt(plik, delimiter=',', dtype=str)#, skip_header = 4)
+            dane = np.genfromtxt(plik, delimiter=',', dtype=str, skip_header = 4)
             self.f = []
             self.l = []
             self.h = []
@@ -655,7 +565,7 @@ tna Z punktu [metry] | typ: float
                 (self.h).append(float(j[nr + 2]))
                 
         elif typ == 'saz':
-            dane = np.genfromtxt(plik, delimiter=',', dtype=str)#, skip_header = 4)
+            dane = np.genfromtxt(plik, delimiter=',', dtype=str, skip_header = 4)
             self.s = []
             self.alfa = []
             self.z = []
@@ -720,86 +630,39 @@ tna Z punktu [metry] | typ: float
         
         args = parser.parse_args()
         
-        try:
-            X = float(args.X)
-        except ValueError:
-            X = args.X
+        #zamiana podanych argumentow na float o ile to mozliwe
+        dane = [args.X, args.Y, args.Z, args.f, args.l, args.H, args.X2, args.Y2, args.Z2, args.s, args.alfa, args.z]
+        dane_ost = []
+        for wartosc in dane:
+            try:
+                wartosc = float(wartosc)
+            except ValueError:
+                wartosc = wartosc
+            dane_ost.append(wartosc)
             
-        try:
-            Y = float(args.Y)
-        except ValueError:   
-            Y = args.Y
-        
-        try:
-            Z = float(args.Z)
-        except ValueError:
-            Z = args.Z
-        
-        try:
-            X2 = float(args.X2)
-        except ValueError:
-            X2 = args.X2
-            
-        try:
-            Y2 = float(args.Y2)
-        except ValueError:
-            Y2 = args.Y2
-            
-        try:
-            Z2 = float(args.Z2)
-        except ValueError:
-            Z2 = args.Z2
-        
-        try:
-            s = float(args.s)
-        except ValueError:
-            s = args.s
-            
-        try:
-            alfa = float(args.alfa)
-        except ValueError:
-            alfa = args.alfa
-        
-        try:
-            z = float(args.z)
-        except ValueError:
-            z= args.z
-        
-        try:
-            f = float(args.f)
-        except ValueError:
-            f = args.f
-            
-        try:
-            l = float(args.l)
-        except ValueError:
-            l = args.l
-        
-        try:
-            h = float(args.H)
-        except ValueError:
-            h = args.H
-        
         nazwa = args.nazwa
         zapis = args.zapis
         model = args.model
         self.metoda = args.metoda
-        
-        self.__init__(model=model, zapis=zapis, nazwa=nazwa, X=X, Y=Y, Z=Z, f=f, l=l, h=h, X2=X2, Y2=Y2, Z2=Z2, s=s, alfa=alfa, z=z)    
+     
+        self.__init__(model=model, zapis=zapis, nazwa=nazwa, X=dane_ost[0], Y=dane_ost[1], Z=dane_ost[2], f=dane_ost[3], l=dane_ost[4], h=dane_ost[5], X2=dane_ost[6], Y2=dane_ost[7], Z2=dane_ost[8], s=dane_ost[9], alfa=dane_ost[10], z=dane_ost[11])    
     
 if __name__=='__main__':
     
+    #PRZYKLADOWE WYWOLANIA
+    
     proba1 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=3782450,
-                            Y=1085030,
-                            Z=5003140,
-                            model='grs80',
-                            zapis=True)
+                           l='16 0 21.66234',
+                           h=289.08952781930566,
+                           s=43000.0,
+                           alfa=230,
+                           z=90,
+                           X=3782450,
+                           Y=1085030,
+                           Z=5003140,
+                           model='grs80',
+                           zapis=True,
+                           nazwa='output1')
     
     print('\nflh2xyz\n', proba1.flh2xyz())
     print('\nPL1992\n', proba1.fl2PL1992())
@@ -808,33 +671,36 @@ if __name__=='__main__':
     print('\nHIRVONEN\n', proba1.xyz2flh())
 
     proba2 = Transformacje(f='52 0 5.72012',
-                            l='16 0 21.66234',
-                            h=289.08952781930566,
-                            s=43000.0,
-                            alfa=230,
-                            z=90,
-                            X=[3782450, 3782450],
-                            Y=[1085030, 1085030],
-                            Z=[5003140, 5003140],
-                            model='grs80')
+                           l='16 0 21.66234',
+                           h=289.08952781930566,
+                           s=43000.0,
+                           alfa=230,
+                           z=90,
+                           X=[3782450, 3782450],
+                           Y=[1085030, 1085030],
+                           Z=[5003140, 5003140],
+                           model='grs80')
     
-    print('\nflh2xyz\n', proba2.flh2xyz())
-    print('\nPL1992\n', proba2.fl2PL1992())
-    print('\nPL2000\n', proba2.fl2PL2000())
-    print('\nNEU\n', proba2.xyz2neu())
+    # print('\nflh2xyz\n', proba2.flh2xyz())
+    # print('\nPL1992\n', proba2.fl2PL1992())
+    # print('\nPL2000\n', proba2.fl2PL2000())
+    # print('\nNEU\n', proba2.xyz2neu())
     # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
     proba3.wczytajplik('test.txt', 'XYZ')
     # proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    # proba3.wczytajplik('test.txt', 'saz', nr = 6)
+    proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
     # print('\nflh2xyz\n', proba3.flh2xyz())
     print('\nPL1992\n', proba3.fl2PL1992())
-    print('\nPL2000\n', proba3.fl2PL2000())
+    # print('\nPL2000\n', proba3.fl2PL2000())
     # print('\nNEU\n', proba3.xyz2neu())
     # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-    proba4 = Transformacje()
-    proba4.wczytajzargparse()
+    proba4 = Transformacje(model='grs80', zapis=True, nazwa='output3')
+    proba4.wczytajplik('wsp_inp.txt', 'XYZ')
+    proba4.fl2PL2000()
     
+    proba5 = Transformacje()
+    proba5.wczytajzargparse()
