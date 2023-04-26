@@ -1,4 +1,23 @@
 # Transformacje Współrzędncyh
+
+# Spis Treści:
+- [Infomacje o programie](##-informacje-o-programie:)
+- [Obsługa programu](##-Obsługa-programu:)
+  - [Wprowadznie danych](##-Wprowadznie-danych:)
+    - [Za pośrednictem pythona](###-Za-pośrednictem-pythona:)
+    - [Za pośrednictem pliku tekstowego](###-Za-pośrednictem-pliku-tekstowego:)
+    - [Za pośrednistwem konsoli](###-Za-pośrednistwem-konsoli:)
+  - [Przykładowe wywołania](##-Przykładowe-wywołania:)
+    - [xyz2flh(), flh2xyz()](###-yz2flh(),-flh2xyz():)
+    - [fl2PL1992(), fl2PL2000()](###-fl2PL1992(),-fl2PL2000():)
+    - [xyz2neu()](###-xyz2neu():)
+- [Znane błędy](#-Znane-błędy)
+  - [Wprowadzenie wszystkich możliwych danych jednocześnie](##-Wprowadzenie-wszystkich-możliwych-danych-jednocześnie)
+  - [Nie wprowadzenie żadnych danych](##-Nie-wprowadzenie-żadnych-danych)
+  - [Błędy przy próbie odkodowania znaków specjalnych](##-błędy-przy-próbie-odkodowania-znaków-specjalnych)
+  - [Błędy przy próbie przeliczenia ze stopni](##-błądy-przy-próbie-przeliczenia-ze-stopni)
+  - [błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000](##-błędy-przy-podaniu-wartości-poza-zasięgiem-stef-odwzorowaczych-układu-PL2000)
+
 ## Infomacje o programie:
 Program został napisany aby w szybki i łatwy sposób transformować oraz manipulować współrzędnymi. Skrypt oferuję takie transformacje jak:
   - XYZ (geocentryczne) -> BLH (elipsoidalne fi, lambda, h) 
@@ -25,7 +44,7 @@ Program został napisany aby w szybki i łatwy sposób transformować oraz manip
 ### Za pośrednistwem konsoli:
 
 
-# Przykładowe wywołania:
+## Przykładowe wywołania:
 ### xyz2flh(), flh2xyz():
   Jako użytkownik chciałbym przeliczyć podane współrzędne we wszystkie metody transformacji jakie są dostępne w programie. Na początku pobieramy skrypt z zdalnego respozytorium https://github.com/PlaceForNick/projekt_1.git, odpalamy program python w wersji 3.9 importujemy wymienione biblioteki powyżej ( numpy oraz math).
    ```
@@ -88,29 +107,29 @@ print('\nNEU\n', proba3.xyz2neu())
 
 # Znane błędy
 
-## wprowadzenie wszystkich możliwych danych jednocześnie
+## Wprowadzenie wszystkich możliwych danych jednocześnie
 
 Jedną z funkcjonalności tego programu jest automatyczne wykonywanie obliczeń, o które użytkownik bezpośrednio nie prosił. Na przykład chcąc przeliczyć współrzędne do układu PL1992 możemy podać współrzędne XYZ. Program samodzielnie przeliczy je na flh, a następnie poda nam interesujące nas współrzędne w układzie PL2000.
 Jednakże nie ma praktycznie żadnego ograniczenia w tym ile i jakie wartości przypiszemy dla naszego obiektu. Dlatego też możliwe jest jednoczesne podanie współrzędnych XYZ punktu A oraz współrzędnych flh punktu B dla tego samego obiektu. Jest to wysoce niezalecane gdyż w połączeniu z funkcjonalnością wykonywania obliczeń w sposób automatyczny, opisaną wyżej może skutkować w utraceniu kontroli nad wykonywanymi przez program obliczeniami! 
 
-## nie wprowadzenie żadnych danych
+## Nie wprowadzenie żadnych danych
 
 Nie ma praktycznie żadnego ograniczenia w tym ile i jakie wartości przypiszemy dla tworzonego przez nas obiektu. Możliwe jest niepodanie żadnej wartości, aczkolwiek będzie to skutkować błędem programu przy próbie wykonania jakiejkolwiek metody.
 
-## błędy przy próbie odkodowania znaków specjalnych
+## Błędy przy próbie odkodowania znaków specjalnych
 
 Geneza tego problemu nie jest dokładnie znana, prawdopodobnie pojawia się on przy wywołaniu programu za pośrednictwem konsoli. Skutkuje on zamianą wszsytkich znaków specjalnych w pliku (m.in. znaków polskich) na inne, bliżej nieokreślone znaki. Taka zamiana może w krytycznych przypadkach niemożnaością korzystania z programu. W celu zapobiegawczym znaki specjalne zostały usunięte z kodu, jednakże niektóre z nich mogły zostać przeoczone. W związku z tym istnieje ryzyko ponownego zaistnienia błędu.
 
-## błądy przy próbie przeliczenia ze stopni <- DO SPR
-
+## Błędy przy próbie przeliczenia ze stopni
+ <- DO SPR
 Program (w szczególności metoda ```__fromdms()```, ukryta przed użytkownikiem) z bliżej nieokreślonych przyczyn może nieumieć prawidłowo odczytać wartości kątów podanych w określony sposób (Pomimo, że teoretycznie powinna. Problem prawdopodobnie polega na mnogości znaków specjalnych, podczas gdy metada ta rozpoznaje tylko ograniczoną ich ilość.) Z tego powodu zaleca się podawanie wartości kątów w następujących formatach:
 - ```123 45 67.890 ``` [stopnie minuty sekundy]
 - ```123.4567890``` [stopnie dziesiętne]
 - ```123``` [stopnie]
 
 
-## błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000 <- DO SPR
-
+## Błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000
+ <- DO SPR
 Przy wczytaniu serii wielu danych znajdujących się poza zakresem stef odwzorowaczych układu PL2000 oraz próbie wykonania metody ```fl2PL2000```, program nie może opuścić pętli, przy jednoczesnym zwracaniu na konsolę błędu ```NieprawidlowaWartosc```.
   
   
