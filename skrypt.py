@@ -5,13 +5,14 @@ import argparse
 class NieprawidlowaWartosc(Exception):
     pass
     '''
-    Blad oznaczajacy podanie niepoprawnej lub/i nieobslugiwanej przez program wartosci.
+    Blad oznaczajacy podanie niepoprawnej lub/i nieobslugiwanej przez program wartosci.
     '''
         
 class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z =''):
-
+        
+    
         #wybor elipsoidy
         if    model  == 'kra':
             self.a= 6378245
@@ -108,19 +109,7 @@ class Transformacje():
             pass      
      
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
-        '''
-        Funkcja przelicza wartosc ka
-ta z stopni na radiany
         
-        Argumenty
-        ---------
-        X - wartosc kata w stopniach | TYPE : float
-        
-        Wynik
-        ---------
-        Z - wartosc kata w radianach | TYPE : float
-        
-        '''
         
         znak = 1
         if X[0] == '-':
@@ -138,28 +127,30 @@ ta z stopni na radiany
         
     def xyz2flh(self): #HIRVONEN
         '''
-        Funkcja sluzaca
-ca do transformacji wspolrzednych ortokartezjanskich (prostoka
-tnych) x, y, z 
+        Funkcja sluzacaca do transformacji wspolrzednych ortokartezjanskich (prostokatnych) x, y, z 
         na wspolrzedne geodezyjne B, L, h.
         
         Argumenty:
         ----------
-        X : TYPE: FLOAT
-            Wspolrzedna X w ukladzie ortokartezjanskim
+        X : TYPE: [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna X w ukladzie ortokartezjanskim [metry]
+            
         Y : TYPE: FLOAT
-            Wspolrzedna Y w ukladzie ortokartezjanskim
-        Z : TYPE: FLOAT
-            Wspolrzedna Z w ukladzie ortokartezjanskim
+            Wspolrzedna Y w ukladzie ortokartezjanskim [metry]
+            
+        Z : TYPE: [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna Z w ukladzie ortokartezjanskim [metry]
             
         Wynik:
         ----------
         
-        f : TYPE: FLOAT
+        f : TYPE: [FLOAT/ LIST OF FLOAT]
             Szerokokosc geodezyjna [stopnie]
-        l: TYPE: FLOAT
-            Dlugosc geodezyjna [stopnie]
-        h : TYPE: FLOAT
+            
+        l: TYPE: [FLOAT/ LIST OF FLOAT]
+            Dlugosc geodezyjna [stopnie]
+            
+        h : TYPE: [FLOAT/ LIST OF FLOAT]
             Wysokosc elipsoidalna [metry]
         
         '''
@@ -244,12 +235,15 @@ tnych) x, y, z
        
     def fl2PL2000(self,m0= 0.999923):
         '''
-        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 2000.
+        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 2000.
 
         Parameters
         ----------
-        f : TYPE : [float] : SzerokoÅsc geodezyjna [stopnie]
-        l : TYPE : [float] : Dlugosc geodezyjna [stopnie]
+        f : TYPE : [FLOAT/ LIST OF FLOAT] 
+            Szerokosc geodezyjna [stopnie]
+            
+        l : TYPE : [FLOAT/ LIST OF FLOAT]
+            Dlugosc geodezyjna [stopnie]
         
         m0 : TYPE, optional
             DESCRIPTION. The default is 0.999923.
@@ -261,8 +255,11 @@ tnych) x, y, z
 
         Returns
         -------
-        x2000 : TYPE : [float] : Wspolrzedna X w ukladzie 2000 [metry]
-        y2000 : TYPE : [float] : Wspolrzedna Y w ukladzie 2000 [metry]
+        x2000 : TYPE : [FLOAT/ LIST OF FLOAT] 
+            Wspolrzedna X w ukladzie 2000 [metry]
+            
+        y2000 : TYPE : [FLOAT/ LIST OF FLOAT] 
+            Wspolrzedna Y w ukladzie 2000 [metry]
 
         '''
 
@@ -327,22 +324,29 @@ tnych) x, y, z
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
-        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 1992.
+        Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 1992.
 
         Parameters
         ----------
-        f : TYPE : [float] : Szerokosc geodezyjna [stopnie]
-        l : TYPE : [float] : Dlugosc geodezyjna [stopnie]
+        f : TYPE : [FLOAT/ LIST OF FLOAT]
+            Szerokosc geodezyjna [stopnie]
+            
+        l : TYPE : [FLOAT/ LIST OF FLOAT]
+            Dlugosc geodezyjna [stopnie]
         
         l0 : TYPE, optional
             DESCRIPTION. The default is radians(19).
+            
         m0 : TYPE, optional
             DESCRIPTION. The default is 0.9993.
 
         Returns
         -------
-        x1992 : TYPE : [float] : wspolrzedna X w ukladzie 1992 [metry]
-        y1992 : TYPE : [float] : wspolrzedne Y w ukladzie 1992 [metry]
+        x1992 : TYPE : [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna X w ukladzie 1992 [metry]
+        
+        y1992 : TYPE : [FLOAT/ LIST OF FLOAT]
+            Wspolrzedne Y w ukladzie 1992 [metry]
 
         '''
         a=self.a
@@ -399,21 +403,22 @@ tnych) x, y, z
         
     def xyz2neu(self):
         '''
-        Funckja obliczaja
-ca wektor w ukÅadzie NEU
+        Funckja obliczajaca wektor w ukladzie NEU
         
         Parameters:
         -----------
-        X: TYPE : FLOAT
-            Wspolrzedna X prostokatna[m]
-        Y: TYPE : FLOAT
-            Wspolrzedna Y prostokatna[m]
-        Z: TYPE : FLOAT
-            Wspolrzedna Z prostokatna[m]
+        X: TYPE : [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna X prostokatna [metry]
+            
+        Y: TYPE : [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna Y prostokatna [metry]
+            
+        Z: TYPE : [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna Z prostokatna [metry]
 
         Returns
         -------
-        NEU: TYPE : LIST 
+        NEU: TYPE : LIST OF FLOAT
             Wspolrzedne topocentryczne (North , East (E), Up (U))
             
         '''
@@ -461,17 +466,25 @@ ca wektor w ukÅadzie NEU
         Parameters:
         ----------
         
-        phi - szerokosc geograficzna punktu | typ: lista
-        lam - dlugosc geograficzna punktu   | typ: lista
-        hel - wysokosc punktu               | typ: float lub int
+        f : TYPE:  [FLOAT/ LIST OF FLOAT]
+            Szerokosc geodezyjna punktu 
+            
+        l : TYPE: [FLOAT/ LIST OF FLOAT]
+            Dlugosc geograficzna punktu   
+            
+        h : TYPE: [FLOAT/ LIST OF FLOAT]
+            Wysokosc punktu               
 
         Returns
         -------
-        X - wspolrzedna prostoka
-tna X punktu [metry] | typ: float
-        Y - wspolrzedna prostokatna Y punktu [metry] | typ: float
-        Z - wspolrzedna prostoka
-tna Z punktu [metry] | typ: float
+        X :  TYPE : [FLOAT/ LIST OF FLOAT] 
+            Wspolrzedna prostokatna X punktu [metry] 
+            
+        Y : TYPE : [FLOAT/ LIST OF FLOAT] 
+            Wspolrzedna prostokatna Y punktu [metry]
+            
+        Z :  TYPE : [FLOAT/ LIST OF FLOAT]
+            Wspolrzedna prostokatna Z punktu [metry] 
 
         '''
         a = self.a 
@@ -664,11 +677,11 @@ if __name__=='__main__':
                            zapis=True,
                            nazwa='output1')
     
-    print('\nflh2xyz\n', proba1.flh2xyz())
-    print('\nPL1992\n', proba1.fl2PL1992())
-    print('\nPL2000\n', proba1.fl2PL2000())
-    print('\nNEU\n', proba1.xyz2neu())
-    print('\nHIRVONEN\n', proba1.xyz2flh())
+    # print('\nflh2xyz\n', proba1.flh2xyz())
+    # print('\nPL1992\n', proba1.fl2PL1992())
+    # print('\nPL2000\n', proba1.fl2PL2000())
+    # print('\nNEU\n', proba1.xyz2neu())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
     proba2 = Transformacje(f='52 0 5.72012',
                            l='16 0 21.66234',
@@ -681,26 +694,26 @@ if __name__=='__main__':
                            Z=[5003140, 5003140],
                            model='grs80')
     
-    # print('\nflh2xyz\n', proba2.flh2xyz())
-    # print('\nPL1992\n', proba2.fl2PL1992())
-    # print('\nPL2000\n', proba2.fl2PL2000())
-    # print('\nNEU\n', proba2.xyz2neu())
-    # print('\nHIRVONEN\n', proba2.xyz2flh())
+# print('\nflh2xyz\n', proba2.flh2xyz())
+# print('\nPL1992\n', proba2.fl2PL1992())
+# print('\nPL2000\n', proba2.fl2PL2000())
+# print('\nNEU\n', proba2.xyz2neu())
+# print('\nHIRVONEN\n', proba2.xyz2flh())
     
-    proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
-    proba3.wczytajplik('test.txt', 'XYZ')
-    # proba3.wczytajplik('test.txt', 'flh', nr = 3)
-    proba3.wczytajplik('test.txt', 'saz', nr = 6)
+    # proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
+    # proba3.wczytajplik('test.txt', 'XYZ')
+    # # proba3.wczytajplik('test.txt', 'flh', nr = 3)
+    # proba3.wczytajplik('test.txt', 'saz', nr = 6)
 
-    # print('\nflh2xyz\n', proba3.flh2xyz())
-    print('\nPL1992\n', proba3.fl2PL1992())
-    # print('\nPL2000\n', proba3.fl2PL2000())
-    # print('\nNEU\n', proba3.xyz2neu())
-    # print('\nHIRVONEN\n', proba3.xyz2flh())
+    # # print('\nflh2xyz\n', proba3.flh2xyz())
+    # print('\nPL1992\n', proba3.fl2PL1992())
+    # # print('\nPL2000\n', proba3.fl2PL2000())
+    # # print('\nNEU\n', proba3.xyz2neu())
+    # # print('\nHIRVONEN\n', proba3.xyz2flh())
     
-    proba4 = Transformacje(model='grs80', zapis=True, nazwa='output3')
-    proba4.wczytajplik('wsp_inp.txt', 'XYZ')
-    proba4.fl2PL2000()
+    # proba4 = Transformacje(model='grs80', zapis=True, nazwa='output3')
+    # proba4.wczytajplik('wsp_inp.txt', 'XYZ')
+    # proba4.fl2PL2000()
     
-    proba5 = Transformacje()
-    proba5.wczytajzargparse()
+    # proba5 = Transformacje()
+    # proba5.wczytajzargparse()
