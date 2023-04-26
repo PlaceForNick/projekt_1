@@ -10,10 +10,23 @@ Program został napisany aby w szybki i łatwy sposób transformować oraz manip
   - do obsługi kodu wystarczy nam program python w wersji 3.9 wraz z zainstalowaną biblioteką 'numpy' i' math' oraz 'argparse'  jest możlwość także skorzystane z funkcji z konsoli Linuxowych np. GitBush. 
   - system operacyjny Windows 11 
   
-## Obsługa programu :
+# Obsługa programu:
+## Wprowadznie danych:
+### Za pośrednictem pythona:
+
+
+
+### Za pośrednictem pliku tekstowego:
+
   Naszym plikiem wejściowym jest plik txt o nazwie 'wsp', w pliku znajdują sie podane współrzędne
   ![image](https://user-images.githubusercontent.com/129080867/234604463-bbb852d6-9fcd-4cbc-84d8-7b1b482f379f.png)
 
+
+### Za pośrednistwem konsoli:
+
+
+# Przykładowe wywołania:
+### xyz2flh(), flh2xyz():
   Jako użytkownik chciałbym przeliczyć podane współrzędne we wszystkie metody transformacji jakie są dostępne w programie. Na początku pobieramy skrypt z zdalnego respozytorium https://github.com/PlaceForNick/projekt_1.git, odpalamy program python w wersji 3.9 importujemy wymienione biblioteki powyżej ( numpy oraz math).
    ```
  import numpy as np
@@ -59,6 +72,7 @@ print('\nflh2xyz\n', test1.flh2xyz())
 Otwieramy ponownie plik wyjściowy 'wynik' i mamy taką sytuacje: 
 ![image](https://user-images.githubusercontent.com/129080867/234591882-869ef439-bc2a-4cbe-b44a-98751cb76839.png)
 
+### fl2PL1992(), fl2PL2000():
 Porównując współrzędne z pliku wejściowego 'wsp' a plikiem wyjściowym 'wynik' możemy śmiało powiedzieć że obie funkcje działają bez problemowo. 
 W podobny sposoób działają funkcje :
 ```
@@ -66,9 +80,38 @@ print('\nPL1992\n', test1.fl2PL1992()) # przeliczenie f,l na x,y w układzie PL1
 print('\nPL2000\n', test1.fl2PL2000()) # przeliczenie f,l na x,y w układzie PL2000
 ```
 
+### xyz2neu()
+Metoda xyz2neu() jest natomiast nieco bardziej zawiła. Do jej wykorzystania potrzebujemy bowiem dwoch zestawow danych. Jednym z nich są współrzędne miejsca obserwacji (flh lub XYZ) natomiast drugim współrzędne celu (XYZ2) lub odległość oraz kąty pionowy i zenitalny do tego celu (saz). Po wprowadzeniu tych danych możemy wywołać tę metodę w sposób następujący:
+```
+print('\nNEU\n', proba3.xyz2neu())
+```
+
+# Znane błędy
+
+## wprowadzenie wszystkich możliwych danych jednocześnie
+
+Jedną z funkcjonalności tego programu jest automatyczne wykonywanie obliczeń, o które użytkownik bezpośrednio nie prosił. Na przykład chcąc przeliczyć współrzędne do układu PL1992 możemy podać współrzędne XYZ. Program samodzielnie przeliczy je na flh, a następnie poda nam interesujące nas współrzędne w układzie PL2000.
+Jednakże nie ma praktycznie żadnego ograniczenia w tym ile i jakie wartości przypiszemy dla naszego obiektu. Dlatego też możliwe jest jednoczesne podanie współrzędnych XYZ punktu A oraz współrzędnych flh punktu B dla tego samego obiektu. Jest to wysoce niezalecane gdyż w połączeniu z funkcjonalnością wykonywania obliczeń w sposób automatyczny, opisaną wyżej może skutkować w utraceniu kontroli nad wykonywanymi przez program obliczeniami! 
+
+## nie wprowadzenie żadnych danych
+
+Nie ma praktycznie żadnego ograniczenia w tym ile i jakie wartości przypiszemy dla tworzonego przez nas obiektu. Możliwe jest niepodanie żadnej wartości, aczkolwiek będzie to skutkować błędem programu przy próbie wykonania jakiejkolwiek metody.
+
+## błędy przy próbie odkodowania znaków specjalnych
+
+Geneza tego problemu nie jest dokładnie znana, prawdopodobnie pojawia się on przy wywołaniu programu za pośrednictwem konsoli. Skutkuje on zamianą wszsytkich znaków specjalnych w pliku (m.in. znaków polskich) na inne, bliżej nieokreślone znaki. Taka zamiana może w krytycznych przypadkach niemożnaością korzystania z programu. W celu zapobiegawczym znaki specjalne zostały usunięte z kodu, jednakże niektóre z nich mogły zostać przeoczone. W związku z tym istnieje ryzyko ponownego zaistnienia błędu.
+
+## błądy przy próbie przeliczenia ze stopni <- DO SPR
+
+Program (w szczególności metoda ```__fromdms()```, ukryta przed użytkownikiem) z bliżej nieokreślonych przyczyn może nieumieć prawidłowo odczytać wartości kątów podanych w określony sposób (Pomimo, że teoretycznie powinna. Problem prawdopodobnie polega na mnogości znaków specjalnych, podczas gdy metada ta rozpoznaje tylko ograniczoną ich ilość.) Z tego powodu zaleca się podawanie wartości kątów w następujących formatach:
+- ```123 45 67.890 ``` [stopnie minuty sekundy]
+- ```123.4567890``` [stopnie dziesiętne]
+- ```123``` [stopnie]
 
 
- 
+## błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000 <- DO SPR
+
+Przy wczytaniu serii wielu danych znajdujących się poza zakresem stef odwzorowaczych układu PL2000 oraz próbie wykonania metody ```fl2PL2000```, program nie może opuścić pętli, przy jednoczesnym zwracaniu na konsolę błędu ```NieprawidlowaWartosc```.
   
   
   
