@@ -1,24 +1,24 @@
 # Transformacje Współrzędncyh
 
 # Spis Treści:
-- [Infomacje o programie](#informacje-o-programie:)
-- [Obsługa programu](#obsługa-programu:)
-  - [Wprowadznie danych](#wprowadznie-danych:)
-    - [Za pośrednictem pythona](#za-pośrednictem-pythona:)
-    - [Za pośrednictem pliku tekstowego](#za-pośrednictem-pliku-tekstowego:)
-    - [Za pośrednistwem konsoli](#za-pośrednistwem-konsoli:)
-  - [Przykładowe wywołania](#przykładowe-wywołania:)
-    - [xyz2flh(), flh2xyz()](#xyz2flh(),-flh2xyz():)
-    - [fl2PL1992(), fl2PL2000()](#fl2PL1992(),-fl2PL2000():)
-    - [xyz2neu()](#xyz2neu():)
+- [Infomacje o programie](#informacje-o-programie)
+- [Obsługa programu](#obsługa-programu)
+  - [Wprowadznie danych](#wprowadznie-danych)
+    - [Za pośrednictem pythona](#za-pośrednictem-pythona)
+    - [Za pośrednictem pliku tekstowego](#za-pośrednictem-pliku-tekstowego)
+    - [Za pośrednistwem konsoli](#za-pośrednistwem-konsoli)
+  - [Przykładowe wywołania](#przykładowe-wywołania)
+    - [xyz2flh(), flh2xyz()](#xyz2flh-flh2xyz)
+    - [fl2PL1992(), fl2PL2000()](#fl2pl1992-fl2pl2000)
+    - [xyz2neu()](#xyz2neu)
 - [Znane błędy](#znane-błędy)
   - [Wprowadzenie wszystkich możliwych danych jednocześnie](#wprowadzenie-wszystkich-możliwych-danych-jednocześnie)
   - [Nie wprowadzenie żadnych danych](#nie-wprowadzenie-żadnych-danych)
   - [Błędy przy próbie odkodowania znaków specjalnych](#błędy-przy-próbie-odkodowania-znaków-specjalnych)
   - [Błędy przy próbie przeliczenia ze stopni](#błędy-przy-próbie-przeliczenia-ze-stopni)
-  - [błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000](#błędy-przy-podaniu-wartości-poza-zasięgiem-stef-odwzorowaczych-układu-PL2000)
+  - [błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000](#błędy-przy-podaniu-wartości-poza-zasięgiem-stef-odwzorowaczych-układu-pl2000)
 
-## Infomacje o programie:
+## Informacje o programie:
 Program został napisany aby w szybki i łatwy sposób transformować oraz manipulować współrzędnymi. Skrypt oferuję takie transformacje jak:
   - XYZ (geocentryczne) -> BLH (elipsoidalne fi, lambda, h) 
   - BLH  (elipsoidalne fi, lambda, h)  -> XYZ (geocentryczne)
