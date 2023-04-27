@@ -12,35 +12,9 @@ class Transformacje():
         
     def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z =''):
         
-    
-        #wybor elipsoidy
-        if    model  == 'kra':
-            self.a= 6378245
-            self.b= 6356863.01877
-        elif  model == "wgs84":
-            self.a = 6378137.0 
-            self.b = 6356752.31424518 
-        elif  model == "grs80":
-            self.a = 6378137.0
-            self.b = 6356752.31414036
-        else:
-            raise NieprawidlowaWartosc(f"{model} ten model elipsoidy nie jest obslugiwany")
-        self.splasz = (self.a - self.b) / self.a
-        self.e2 = (2 * self.splasz - self.splasz ** 2)
-        
-        #wybor zapisu do pliku txt
-        if zapis == True:
-            self.zapis = zapis
-            self.nazwa = nazwa + '.txt'
-            self.plik = open(self.nazwa, 'w')
-            self.plik.close()
-        elif zapis == False:
-            self.zapis = zapis
-        else:
-            raise NieprawidlowaWartosc(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
-                                      '- False\n'
-                                      '- True')
-        
+        self.__elipsoida(model) #wybor elipsoidy
+        self.__zapiszplik(zapis, nazwa) #wybor zapisu do pliku txt     
+
         #zamiana podanych danych na liste
         dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z]
         dane_ost = []
@@ -89,8 +63,45 @@ class Transformacje():
         self.alfa = dane_kat_ost[2]
         self.z = dane_kat_ost[3]
         
-        #wybor metody dla argparse
         try:
+            self.__wykonajmetode(self.metoda) #wybor metody dla argparse
+        except AttributeError:
+            pass  
+            
+    
+    def __elipsoida(self, model):
+        #wybor elipsoidy
+        if    model  == 'kra':
+            self.a= 6378245
+            self.b= 6356863.01877
+        elif  model == "wgs84":
+            self.a = 6378137.0 
+            self.b = 6356752.31424518 
+        elif  model == "grs80":
+            self.a = 6378137.0
+            self.b = 6356752.31414036
+        else:
+            raise NieprawidlowaWartosc(f"{model} ten model elipsoidy nie jest obslugiwany")
+        self.splasz = (self.a - self.b) / self.a
+        self.e2 = (2 * self.splasz - self.splasz ** 2)
+        
+    def __zapiszplik(self, zapis, nazwa):
+        #wybor zapisu do pliku txt
+        if zapis == True:
+            self.zapis = zapis
+            self.nazwa = nazwa
+            self.plik = open(self.nazwa, 'w')
+            self.plik.close()
+        elif zapis == False:
+            self.zapis = zapis
+        else:
+            raise NieprawidlowaWartosc(f'Podana przez Ciebie wartosc zapis "{zapis}" jest nieprawidlowa. Wybierz jedna z podanych ponizej wartosci:\n'
+                                      '- False\n'
+                                      '- True')
+    
+    def __wykonajmetode(self, metoda):
+        #wybor metody dla argparse
+        # try:
             if self.metoda == 'xyz2flh':
                 print(self.xyz2flh())
             elif self.metoda == 'flh2xyz':
@@ -105,12 +116,10 @@ class Transformacje():
                 pass
             else:
                 raise NieprawidlowaWartosc(f"{self.metoda} ta metoda transformacji wspolrzednych nie jest obslugiwana")
-        except AttributeError:
-            pass      
-     
+        # except AttributeError:
+            # pass  
+        
     def __fromdms(self,X): #zmiana ze stopni w ukladzie dms na radiany oraz stopnie dziesietne 
-        
-        
         znak = 1
         if X[0] == '-':
              znak = -1
@@ -154,57 +163,67 @@ class Transformacje():
             Wysokosc elipsoidalna [metry]
         
         '''
-
-        a = self.a 
-        e2 = self.e2 
-        f_st = []
-        l_st = []
-        f_ost = []
-        l_ost = []
-        h_ost = []
-        i = 0
-        
-        while i < len(self.X):
-            X = self.X[i]
-            Y = self.Y[i]
-            Z = self.Z[i] 
+        try:
+            a = self.a 
+            e2 = self.e2 
+            f_st = []
+            l_st = []
+            f_ost = []
+            l_ost = []
+            h_ost = []
+            i = 0
             
-            p = np.sqrt(X**2 + Y**2)
-            f = np.arctan(Z/(p * (1 - e2)))
-            while True:
+            while i < len(self.X):
+                X = self.X[i]
+                Y = self.Y[i]
+                Z = self.Z[i] 
+                
+                p = np.sqrt(X**2 + Y**2)
+                f = np.arctan(Z/(p * (1 - e2)))
+                while True:
+                    N = self.__Np(f)
+                    h = (p / np.cos(f)) - N
+                    fp = f
+                    f = np.arctan(Z / (p * (1 - e2 * N / (N + h))))
+                    if abs(fp - f) < (0.000001/206265):
+                        break
                 N = self.__Np(f)
                 h = (p / np.cos(f)) - N
-                fp = f
-                f = np.arctan(Z / (p * (1 - e2 * N / (N + h))))
-                if abs(fp - f) < (0.000001/206265):
-                    break
-            N = self.__Np(f)
-            h = (p / np.cos(f)) - N
-            l = np.arctan2(Y, X)
-            
-            f_st.append(self.__dms(f))
-            l_st.append(self.__dms(l))
-            h_ost.append(h)
-            f_ost.append(f)
-            l_ost.append(l)
-            i += 1
-            
-        self.f = f_ost
-        self.l = l_ost
-        self.h = h_ost
-        
-        if self.zapis == True:
-            self.plik = open(self.nazwa, 'a')
-            self.plik.write('--------------------------------------------------\n')
-            self.plik.write("f [° ' '']         l [° ' '']         h [m]\n")
-            self.plik.write('--------------------------------------------------\n')
-            i = 0
-            while i < len(f_st):
-                self.plik.write(f'{f_st[i]} {l_st[i]} {h_ost[i]:10.3f}\n')
+                l = np.arctan2(Y, X)
+                
+                f_st.append(self.__dms(f))
+                l_st.append(self.__dms(l))
+                h_ost.append(h)
+                f_ost.append(f)
+                l_ost.append(l)
                 i += 1
-            self.plik.close()
+                
+            self.f = f_ost
+            self.l = l_ost
+            self.h = h_ost
+            
+            if self.zapis == True:
+                self.plik = open(self.nazwa, 'a')
+                self.plik.write('--------------------------------------------------\n')
+                self.plik.write("f [° ' '']         l [° ' '']         h [m]\n")
+                self.plik.write('--------------------------------------------------\n')
+                i = 0
+                while i < len(f_st):
+                    self.plik.write(f'{f_st[i]} {l_st[i]} {h_ost[i]:10.3f}\n')
+                    i += 1
+                self.plik.close()
+            
+            return(f_st, l_st, h_ost)
         
-        return(f_st, l_st, h_ost)
+        except TypeError:
+            raise NieprawidlowaWartosc('Podane dane są nieprawidłowe do skorzystnia z metody xyz2flh(). Podane przez Ciebie wartosci to:\n'
+                                       f'- X = {self.X}\n'
+                                       f'- Y = {self.Y}\n'
+                                       f'- Z = {self.Z}\n'
+                                       'Metoda ta mogła zostać wykonana automatycznie przez program, jeśli do wykonania innej metody podano niepoprawne wartości flh lub nie podano ich wcale. Podane przez Ciebie wartosci to:\n'
+                                       f'- f = {self.f}\n'
+                                       f'- l = {self.l}\n'
+                                       f'- h = {self.h}')
      
     def __dms(self, x): #zamiana wyswietlania sie stopni z ukladu 10 na uklad 60 
         znak = ' '
@@ -268,9 +287,9 @@ class Transformacje():
         x_ost = []
         y_ost = []
         i = 0
-        
+            
         while i < (len(self.f) or len(self.X)):
-
+    
             if self.f == [''] or self.l == ['']:
                 self.xyz2flh()
             f = self.f[i]
@@ -292,7 +311,7 @@ class Transformacje():
                 raise NieprawidlowaWartosc(f'podana wartosc l znajduje sie poza zakresem stref odwzorowawcych ukladu wspolrzednych PL2000. '
                                            f'Obslugiwany zakres to {13.5}° - {25.5}° '
                                            f'Podana przez Ciebie wartosc to {self.__dms(l)}')
-       
+           
             b2 = a**2*(1 - e2)
             ep2 = (a**2 - b2)/b2
             dl = l - l0
@@ -304,11 +323,11 @@ class Transformacje():
             ygk = dl*N*cos(f)*(1+(dl**2/6)*cos(f)**2*(1 - t**2 + n2) + (dl**4/120)*cos(f)**4*(5 - 18*t**2 + t**4 + 14*n2 - 58*n2*t**2))
             x2000 = xgk * m0
             y2000 = ygk * m0 + ns * 1000000 + 500000
-                
+            
             x_ost.append(x2000)
             y_ost.append(y2000)
             i += 1
-        
+            
         if self.zapis == True:
             self.plik = open(self.nazwa, 'a')
             self.plik.write('--------------------------------------------------\n')
@@ -321,6 +340,8 @@ class Transformacje():
             self.plik.close()
             
         return(x_ost,y_ost)
+        
+
 
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
@@ -422,43 +443,54 @@ class Transformacje():
             Wspolrzedne topocentryczne (North , East (E), Up (U))
             
         '''
-
-        a=self.a
-        e2=self.e2
-        NEU_ost = []
-        i = 0
-        
-        while i < (len(self.f) or len(self.X)):
-        
-            if self.f == [''] or self.l == ['']:
-                self.xyz2flh()
-            f = self.f[i]
-            l = self.l[i]
-            
-            if self.X2 == [''] or self.Y2 == [''] or self.Z2 == ['']:  
-                dX = self.__saz2neu(self.s[i], self.alfa[i], self.z[i])
-            else:
-                dX = [self.X2[i], self.Y2[i], self.Z2[i]]
-    
-            R = self.__Rneu(f, l)
-            NEU = R.T @ dX
-            
-            NEU_ost.append(NEU)
-            i += 1
-
-        if self.zapis == True:
-            self.plik = open(self.nazwa, 'a')
-            self.plik.write('--------------------------------------------------\n')
-            self.plik.write("N [m]              E [m]              U [m]\n")
-            self.plik.write('--------------------------------------------------\n')
+        try:
+            a=self.a
+            e2=self.e2
+            NEU_ost = []
             i = 0
-            while i < len(NEU_ost): 
-                self.plik.write(f'{NEU_ost[i][0]:10.3f} {NEU_ost[i][1]:10.3f} {NEU_ost[i][2]:10.3f}\n')
-                i += 1
-            self.plik.close()
             
-        return(NEU_ost)
+            while i < (len(self.f) or len(self.X)):
+            
+                if self.f == [''] or self.l == ['']:
+                    self.xyz2flh()
+                f = self.f[i]
+                l = self.l[i]
+                
+                if self.X2 == [''] or self.Y2 == [''] or self.Z2 == ['']:  
+                    dX = self.__saz2neu(self.s[i], self.alfa[i], self.z[i])
+                else:
+                    dX = [self.X2[i], self.Y2[i], self.Z2[i]]
         
+                R = self.__Rneu(f, l)
+                NEU = R.T @ dX
+                
+                NEU_ost.append(NEU)
+                i += 1
+    
+            if self.zapis == True:
+                self.plik = open(self.nazwa, 'a')
+                self.plik.write('--------------------------------------------------\n')
+                self.plik.write("N [m]              E [m]              U [m]\n")
+                self.plik.write('--------------------------------------------------\n')
+                i = 0
+                while i < len(NEU_ost): 
+                    self.plik.write(f'{NEU_ost[i][0]:10.3f} {NEU_ost[i][1]:10.3f} {NEU_ost[i][2]:10.3f}\n')
+                    i += 1
+                self.plik.close()
+                
+            return(NEU_ost)
+        
+        except TypeError:
+            raise NieprawidlowaWartosc('Podane dane są nieprawidłowe do skorzystnia z metody xyz2neu(). Podane przez Ciebie wartosci to:\n'
+                                       f'- s = {self.s}\n'
+                                       f'- alfa = {self.alfa}\n'
+                                       f'- z = {self.z}\n'
+                                       'Ewentualnie można też wykożystać XYZ2 zamiast saz. Podane przez Ciebie wartosci to:\n'
+                                       f'- X2 = {self.X2}\n'
+                                       f'- Y2 = {self.Y2}\n'
+                                       f'- Z2 = {self.Z2}\n'
+                                       'Oprócz tego potrzebne są też XYZ lub fl, ale te są podane poprawne.')
+            
     def flh2xyz(self):
         '''
         Funkcja przelicza ze wspolrzednych krzywoliniowych na wspolrzedne prostokatne.
@@ -487,40 +519,47 @@ class Transformacje():
             Wspolrzedna prostokatna Z punktu [metry] 
 
         '''
-        a = self.a 
-        e2 = self.e2 
-        x_ost = []
-        y_ost = []
-        z_ost = []
-        i = 0
-        
-        while i < len(self.f):
-            f = self.f[i]
-            l = self.l[i]
-            h = self.h[i]
-
-            N = self.__Np(f)
-            x = (N+h)*np.cos(f)*np.cos(l)
-            y = (N+h)*np.cos(f)*np.sin(l)
-            z = ((N*(1-e2)+h))*np.sin(f)
-            
-            x_ost.append(x)
-            y_ost.append(y)
-            z_ost.append(z)
-            i += 1
-        
-        if self.zapis == True:
-            self.plik = open(self.nazwa, 'a')
-            self.plik.write('--------------------------------------------------\n')
-            self.plik.write("X [m]              Y [m]              Z [m]\n")
-            self.plik.write('--------------------------------------------------\n')
+        try:
+            a = self.a 
+            e2 = self.e2 
+            x_ost = []
+            y_ost = []
+            z_ost = []
             i = 0
-            while i < len(x_ost):
-                self.plik.write(f'{x_ost[i]:10.3f} {y_ost[i]:10.3f} {z_ost[i]:10.3f}\n')
-                i += 1
-            self.plik.close()
             
-        return(x_ost, y_ost, z_ost)
+            while i < len(self.f):
+                f = self.f[i]
+                l = self.l[i]
+                h = self.h[i]
+    
+                N = self.__Np(f)
+                x = (N+h)*np.cos(f)*np.cos(l)
+                y = (N+h)*np.cos(f)*np.sin(l)
+                z = ((N*(1-e2)+h))*np.sin(f)
+                
+                x_ost.append(x)
+                y_ost.append(y)
+                z_ost.append(z)
+                i += 1
+            
+            if self.zapis == True:
+                self.plik = open(self.nazwa, 'a')
+                self.plik.write('--------------------------------------------------\n')
+                self.plik.write("X [m]              Y [m]              Z [m]\n")
+                self.plik.write('--------------------------------------------------\n')
+                i = 0
+                while i < len(x_ost):
+                    self.plik.write(f'{x_ost[i]:10.3f} {y_ost[i]:10.3f} {z_ost[i]:10.3f}\n')
+                    i += 1
+                self.plik.close()
+                
+            return(x_ost, y_ost, z_ost)
+        
+        except TypeError:
+            raise NieprawidlowaWartosc('Podane dane są nieprawidłowe do skorzystnia z tej metody. Podane przez Ciebie wartosci to:\n'
+                                       f'- f = {self.f}\n'
+                                       f'- l = {self.l}\n'
+                                       f'- h = {self.h}')
     
     def wczytajplik(self, plik, typ, nr = 0):
         
@@ -638,8 +677,11 @@ class Transformacje():
         
         parser.add_argument('--model', help='model elipsoidy', choices=['grs80','wgs84', 'kra'], required=False, type=str, default='grs80')
         parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str, default='')
-        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default='False')
-        parser.add_argument('--nazwa', help='nazwa pliku wyjsciowego (.txt)', required=False, type=str, default='output')
+        parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default=False)
+        parser.add_argument('--output', help='nazwa pliku wyjsciowego (.txt)', required=False, type=str, default='output')
+        parser.add_argument('--input', help='nazwa pliku wejsciowego (.txt)', required=False, type=str, default='input')
+        parser.add_argument('--odczyt', help='odczyt z pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default=False)
+        parser.add_argument('--typ', help='typ danych zawartych we wczytywanym pliku', choices=['XYZ','XYZ2','flh','saz'], required=False, type=str, default='')
         
         args = parser.parse_args()
         
@@ -653,12 +695,18 @@ class Transformacje():
                 wartosc = wartosc
             dane_ost.append(wartosc)
             
-        nazwa = args.nazwa
-        zapis = args.zapis
-        model = args.model
         self.metoda = args.metoda
-     
-        self.__init__(model=model, zapis=zapis, nazwa=nazwa, X=dane_ost[0], Y=dane_ost[1], Z=dane_ost[2], f=dane_ost[3], l=dane_ost[4], h=dane_ost[5], X2=dane_ost[6], Y2=dane_ost[7], Z2=dane_ost[8], s=dane_ost[9], alfa=dane_ost[10], z=dane_ost[11])    
+        
+        if args.odczyt == True:
+            self.wczytajplik(args.input, args.typ)
+            self.__elipsoida(args.model)
+            self.__zapiszplik(args.zapis, args.output)
+            self.__wykonajmetode(self.metoda)
+        else:  
+            nazwa = args.output
+            zapis = args.zapis
+            model = args.model
+            self.__init__(model=model, zapis=zapis, nazwa=nazwa, X=dane_ost[0], Y=dane_ost[1], Z=dane_ost[2], f=dane_ost[3], l=dane_ost[4], h=dane_ost[5], X2=dane_ost[6], Y2=dane_ost[7], Z2=dane_ost[8], s=dane_ost[9], alfa=dane_ost[10], z=dane_ost[11])    
     
 if __name__=='__main__':
     
@@ -670,7 +718,7 @@ if __name__=='__main__':
                            s=43000.0,
                            alfa=230,
                            z=90,
-                           X=3782450,
+                           # X=3782450,
                            Y=1085030,
                            Z=5003140,
                            model='grs80',
@@ -681,7 +729,7 @@ if __name__=='__main__':
     # print('\nPL1992\n', proba1.fl2PL1992())
     # print('\nPL2000\n', proba1.fl2PL2000())
     # print('\nNEU\n', proba1.xyz2neu())
-    # print('\nHIRVONEN\n', proba1.xyz2flh())
+    print('\nHIRVONEN\n', proba1.xyz2flh())
 
     proba2 = Transformacje(f='52 0 5.72012',
                            l='16 0 21.66234',
@@ -694,11 +742,11 @@ if __name__=='__main__':
                            Z=[5003140, 5003140],
                            model='grs80')
     
-# print('\nflh2xyz\n', proba2.flh2xyz())
-# print('\nPL1992\n', proba2.fl2PL1992())
-# print('\nPL2000\n', proba2.fl2PL2000())
-# print('\nNEU\n', proba2.xyz2neu())
-# print('\nHIRVONEN\n', proba2.xyz2flh())
+    # print('\nflh2xyz\n', proba2.flh2xyz())
+    # print('\nPL1992\n', proba2.fl2PL1992())
+    # print('\nPL2000\n', proba2.fl2PL2000())
+    # print('\nNEU\n', proba2.xyz2neu())
+    # print('\nHIRVONEN\n', proba2.xyz2flh())
     
     # proba3 = Transformacje(model='kra', zapis=True, nazwa='output2')
     # proba3.wczytajplik('test.txt', 'XYZ')
@@ -715,5 +763,5 @@ if __name__=='__main__':
     # proba4.wczytajplik('wsp_inp.txt', 'XYZ')
     # proba4.fl2PL2000()
     
-    # proba5 = Transformacje()
-    # proba5.wczytajzargparse()
+    proba5 = Transformacje()
+    proba5.wczytajzargparse()
