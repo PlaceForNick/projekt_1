@@ -32,7 +32,20 @@ Program został napisany aby w szybki i łatwy sposób transformować oraz manip
 # Obsługa programu:
 ## Wprowadznie danych:
 ### Za pośrednictem pythona:
-
+```
+proba1 = Transformacje(f='52 0 5.72012',
+                        l='16 0 21.66234',
+                        h=289.08952781930566,
+                        s=43000.0,
+                        alfa=230,
+                        z=90,
+                        X=3782450,
+                        Y=1085030,
+                        Z=5003140,
+                        model='grs80',
+                        zapis=True,
+                        nazwa='output1')
+```
 
 
 ### Za pośrednictem pliku tekstowego:
@@ -42,8 +55,39 @@ Program został napisany aby w szybki i łatwy sposób transformować oraz manip
 
 
 ### Za pośrednistwem konsoli:
+```
+ python skrypt.py -h
+usage: skrypt.py [-h] [-X X] [-Y Y] [-Z Z] [-X2 X2] [-Y2 Y2] [-Z2 Z2] [-s S]
+                 [-alfa ALFA] [-z Z] [-f F] [-l L] [-H H]
+                 [--model {grs80,wgs84,kra}]
+                 [--metoda {xyz2flh,neu,flh2xyz,pl2000,pl1992}]
+                 [--zapis {True,False}] [--nazwa NAZWA]
+
+Transformacje wspolrzednych
+
+options:
+  -h, --help            show this help message and exit
+  -X X                  wartosc wspolrzednej pierwszegi punktu X [m]
+  -Y Y                  wartosc wspolrzednej pierwszego punktu Y [m]
+  -Z Z                  wartosc wspolrzednej pierwszego punktu Z [m]
+  -X2 X2                wartosc wspolrzednej drugiego punktu X [m]
+  -Y2 Y2                wartosc wspolrzednej drugiego punktu Y [m]
+  -Z2 Z2                wartosc wspolrzednej drugiego punktu Z [m]
+  -s S                  wartosc dlugosci miedzy dwoma punktami [m]
+  -alfa ALFA            wartosc kat poziomego [° ' '']
+  -z Z                  wartosc kat zenitalnego [° ' '']
+  -f F                  wartosc wspolrzednej f [° ' '']
+  -l L                  wartosc wspolrzednej l [° ' '']
+  -H H                  wartosc wspolrzednej H [m]
+  --model {grs80,wgs84,kra}
+                        model elipsoidy
+  --metoda {xyz2flh,neu,flh2xyz,pl2000,pl1992}
+                        metoda transformacji
+  --zapis {True,False}  zapis do pliku tekstowego (.txt)
+  --nazwa NAZWA         nazwa pliku wyjsciowego (.txt)
 
 
+```
 ## Przykładowe wywołania:
 ### xyz2flh(), flh2xyz():
   Jako użytkownik chciałbym przeliczyć podane współrzędne we wszystkie metody transformacji jakie są dostępne w programie. Na początku pobieramy skrypt z zdalnego respozytorium https://github.com/PlaceForNick/projekt_1.git, odpalamy program python w wersji 3.9 importujemy wymienione biblioteki powyżej ( numpy oraz math).
@@ -121,7 +165,7 @@ Nie ma praktycznie żadnego ograniczenia w tym ile i jakie wartości przypiszemy
 Geneza tego problemu nie jest dokładnie znana, prawdopodobnie pojawia się on przy wywołaniu programu za pośrednictwem konsoli. Skutkuje on zamianą wszsytkich znaków specjalnych w pliku (m.in. znaków polskich) na inne, bliżej nieokreślone znaki. Taka zamiana może w krytycznych przypadkach niemożnaością korzystania z programu. W celu zapobiegawczym znaki specjalne zostały usunięte z kodu, jednakże niektóre z nich mogły zostać przeoczone. W związku z tym istnieje ryzyko ponownego zaistnienia błędu.
 
 ## Błędy przy próbie przeliczenia ze stopni
- <- DO SPR
+
 Program (w szczególności metoda ```__fromdms()```, ukryta przed użytkownikiem) z bliżej nieokreślonych przyczyn może nieumieć prawidłowo odczytać wartości kątów podanych w określony sposób (Pomimo, że teoretycznie powinna. Problem prawdopodobnie polega na mnogości znaków specjalnych, podczas gdy metada ta rozpoznaje tylko ograniczoną ich ilość.) Z tego powodu zaleca się podawanie wartości kątów w następujących formatach:
 - ```123 45 67.890 ``` [stopnie minuty sekundy]
 - ```123.4567890``` [stopnie dziesiętne]
@@ -129,7 +173,7 @@ Program (w szczególności metoda ```__fromdms()```, ukryta przed użytkownikiem
 
 
 ## Błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000
- <- DO SPR
+
 Przy wczytaniu serii wielu danych znajdujących się poza zakresem stef odwzorowaczych układu PL2000 oraz próbie wykonania metody ```fl2PL2000```, program nie może opuścić pętli, przy jednoczesnym zwracaniu na konsolę błędu ```NieprawidlowaWartosc```.
   
   
