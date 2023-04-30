@@ -718,7 +718,7 @@ if __name__=='__main__':
                            s=43000.0,
                            alfa=230,
                            z=90,
-                           # X=3782450,
+                           X=3782450,
                            Y=1085030,
                            Z=5003140,
                            model='grs80',
@@ -763,5 +763,11 @@ if __name__=='__main__':
     # proba4.wczytajplik('wsp_inp.txt', 'XYZ')
     # proba4.fl2PL2000()
     
+    proba4 = Transformacje(f = '52 5 50.18',
+                           l = '21 1 53.52',
+                           s = 31000,
+                           alfa = 280,
+                           z = 90)
+    print(proba4.xyz2neu())
     proba5 = Transformacje()
     proba5.wczytajzargparse()
