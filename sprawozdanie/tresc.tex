@@ -1,0 +1,79 @@
+
+	\normalsize%
+	\section{Cel ćwiczenia}
+		Celem naszego projektu było napisanie skryptu o podanych właściwościach:
+		\begin{itemize}
+			\item być napisany jako klasa zawierająca metody implementujące poszczególne transformacje,
+			\item posiadać strukturę, w której definicje są oddzielone od wywołań klauzulą podaną przez prowadzącego,
+			\item implementować następujące trnsformacje :
+				\begin{itemize}
+					\item XYZ (geocentryczne) -> BLH (elipsoidalne fi, lambda, h)
+					\item BLH -> XYZ 
+					\item XYZ -> NEUp (topocentryczne northing, easting, up) 
+					\item BL(GRS80, WGS84, ew. Krasowski) -> 2000
+					\item BL(GRS80, WGS84, ew. Krasowski) -> 1992
+					
+				\end{itemize}
+			\item umożliwiać podawanie argumentów przy wywołaniu (biblioteka argparse)
+			\item potrafić transformować wiele współrzędnych zapisanych w pliku tekstowym przekazywanym do programu jako argument i tworzyć plik wynikowy
+			\item obsłużyć przypadki gdy użytkownik wprowadzi niepoprawne wartości (np. nieobsługiwaną elipsoidę)
+			\item być napisany w parach i wersjonowany z użyciem git-a oraz hostowany na githubie w publicznym repozytorium
+			\item udukumentowany na githubie w pliku README.md 
+		\end{itemize}
+				
+	
+	\section{Wykorzystane narzędzia i materiały potrzebne do replikacji ćwiczenia}
+
+		Do pracy nad programem użyliśmy następujących narzędzi :
+			\begin{itemize}
+				\item program był zapisywany i przechowywany w githubie,
+				\item do pisania programu wykorzystaliśmy program Python ,
+				\item naszym system operacyjnym był Windows 11,
+				\item potrzebne informacje do utworzenia podanych transformacji uzyskalismy z stron podanych przez prowadzącego na platformie Teams oraz niezbędne okazały, się materiały z poprzedniego semestru.
+		\end{itemize}
+	\section{przebieg ćwiczenia}
+	%czyli: zrobiliśmy to-i-to, 
+	%potem to-i-to z wykorzystaniem wzorów/algorytmów 
+	%które znaleźliśmy tu-i-tu, a na koniec sprawdziliśmy za pomocą programu takiego-a-takiego czy nasze wyniki są poprawne. Ponadto powinny zostać 
+	%zawarte inne istotne informacje tj. dlaczego zdecydowaiśmy się na taką a nie inną implementację jakiegoś algorytmu (np."postanowiliśmy wykorzystać 
+	%bibliotekę numpy do obliczeń macierzowych aby uzyskać precyzyjniejsze wyniki i schludniejszy kod w zamian za trochę bardziej złożony proces 
+	%instalacji - użytkownik musi zainstalować bibliotekę na swoin komputerze" albo "algorytmy wykorzystujące obliczenia macierzowe zaimplementowaliśmy 
+	%wykorzystując jedynie bibliotekę standardową pythona aby użytkownik nie musiał instalować dodatkowych bibliotek, jednocześnie poświęcając nieco 
+	%szybkość i dokładność obliczeń oraz schludność kodu")
+	
+	Zaczęliśmy od implementacji wymaganych metod klasowych. Do tego celu wykorzystaliśmy nasze programy z poprzedniego semestru. Było to też głównym powodem zastosowania bibliotek math oraz numpy, które już tam były w użyciu. Ponadto biblioteka numpy jest powszechnie stosowana, stąd wiele potencjalnych użytkowników już ma ją w posiadaniu i potrzeba jej instalacji nie stanowi żadnego problemu, podobnie jak w przypadku biblioteki wbudowanej pythona math.
+	
+	Następnym etapem było połączenie wszystkiego w jedną klasę oraz zawarcie wymaganych funkcjonalności związanych z bibioteką argparse oraz wczytywniem i zapisywaniem danych do pliku tekstowego. W związku z tym musieliśmy też wdrożyć modyfikacje do zawartych już metod, tak aby pasowały one do naszej koncepcji wykonania tego ćwiczenia.
+	
+	Postanowiliśmy bowiem maksymalnie uprościć obsługę naszego programu z myślą o wygodzie użytkownika. Z tego powodu wszystkie dane potrzebne do wykonania obliczeń w naszym przypadku podaje się przy wywołaniu klasy, a nie poszczególnych metod (chyba że wprowadzamy dane z użyciem pliku tekstowego lub za pośrednictwem konsoli). Dzięki temu możliwe też było wykonanie niezbędnych obliczeń pośrednich samoczynnie przez program. Przykładowo, chcąc przeliczyć współrzędne \textphi, \textlambda , h do układu PL2000, wystarczy wynonać tylko metdę fl2PL2000(). Program automatycznie przeliczy wtedy wprowadzone wartości kątów na radiany, a następnie przeliczy je na współrzędne X,Y,Z, aby móc wykonać metodę, o którą prosiliśmy.
+	
+	Z tego samego powodu wszsytkie wprowadzane dane program wrzucana do listy - nawet jednoelementowej, a następnie przy wykonaniu każdej metody obliczenia są wykonywane w pętli dla kolejnych danych zawartych we wspomianych listach. Takie postępowanie drastycznie uprościło procedurę wczytywania plików z danymi. Nie wymaga to bowiem od użytkownika stosowania jakichkolwiek pętli. Wystarczy stworzyć obiekt i wywołać metodę wczytajzpliku().
+	
+	W międzyczasie zadbaliśmy również o to, aby użytkownikowi zwracany był stosowny komunikat błędu wszędzie tam, gdzie użytkownik może w stosunkowo łatwy spoób wygenerować problem dla naszego programu. W tym celu stworzyliśmy też własną klase błędu NieprawidlowaWartosc, aby nie musieć stosować wbudowanych rodzajów błędów do naszych celów i nie tworzyć tym samym ryzyka, iż użytkownik zostanie wprowadzony w błąd zasugerowawszy się typem zwróconego mu błędu.
+	
+	W trakcie tworzenia programu niejedokronie niezmiernie pomocne okazywały się źródła zewnętrzne, do których sięgaliśmy w przypadku jakichkowlniek napotkanych trudności z którymi nie mogliśmy sobie poradzić samodzielnie. Polegało to na implementacji znalezionego kodu do naszego programu lub  na samodzielnym wprowadzenie poprawek na podstawie znalezionych w takim źródle informacji. Do takich źródeł najczęściej należały \url{https://stackoverflow.com}, materiały dostarczone przez platformę MS Teams, dokumentacja biblioteki argparse oraz różnego rodzaju poradniki dotyczące programowania obiektowego i biblioteki argparse.  
+	
+	Równie pomocne było korzystanie ze zdalnego repozytorium utworzonego przez nas na pltformie github oraz stosowanie systemu kontroli wersji git. Znacząco uporządkowało i ułatwiło to nam pracę zespołową nad programem przez cały okres wykonywania ćwiczenia.
+	
+	Po za tym niemalże od samego początku porównywaliśmy wyniki uzyskane z pisanego programu do tych uzyskanych w różnego rodzaju ćwiczeniach z ubiegłego semestru. Ponieważ programy lub wyniki ich obliczeń były werefikowane przez prowadzących, mieliśmy pewność co do ich poprawności. Stąd też mogliśmy na bieżąco werefikować czy zamiany, jakie wprowadziliśmy do kodu nie wpłynęły na poprawność wykonywanych obliczeń.
+	
+	
+	
+	\section{Podsumowanie}
+		\begin{itemize}
+			\item link do naszego repozytorium, z którego można pobrać program:\\	\url{https://github.com/PlaceForNick/projekt_1}
+			\item umiejętności nabyte podczas wykonywania ćwiczenia:
+				\begin{itemize}
+					\item pisanie kodu obiektowego w Pythonie
+					\item implementowanie algorytmów pochodzących ze źródeł zewnętrznych
+					\item  tworzenie dokumentów w latex
+					\item współpraca w wieloosobowym zespole z wykorzystaniem systemu kontroli wersji git
+					\item tworzenie narzędzi w interfejsie tekstowym potrafiących przyjmować argumenty przy wywołaniu 
+					\item pisanie użytecznej dokumentacji
+			\end{itemize}
+			\item spostrzeżenia i trudności napotkane w trakcie wykonywania ćwiczenia
+				\begin{itemize}
+					\item Podczas pracy nad programem nieraz natykaliśmy się na szereg większych lub miniejszych problemów, z którymi koniec końców udało nam się uporać. Jednakże nieudało nam się wytłumaczyć jednego zagadnienia. W pewnym momencie, w trakcie prac nad możliwością podawania argumentów w konsolę wszystkie znaki specjalne (m.in. znaki polskie) zostały przez program zamienione na inne. Dodatkowo u jednego z nas skutkowało zaprzestaniem działania programu oraz zwracaniem błędów na konsolę. (Co jest również ciekawe, dlaczego incydent uniemożliwiał działanie programu tylko na jednym komputerze, a nie u nas obu). W celu pozbycia się problemu musieliśmy pozbyć się problematycznych znaków i starać się ich nie używać w przyszłości. Nie udało nam się bowiem znaleźć żadnego lepszego rozwiązania tego problemu. 
+				\end{itemize}
+			
+		\end{itemize}

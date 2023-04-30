@@ -1,0 +1,63 @@
+This is BibTeX, Version 0.99d
+Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
+The top-level auxiliary file: main.aux
+Reallocating 'name_of_file' (item size: 1) to 8 items.
+The style file: apacite.bst
+Reallocating 'name_of_file' (item size: 1) to 13 items.
+Reallocating 'glb_str_end' (item size: 4) to 20 items.
+Reallocating 'glb_str_ptr' (item size: 4) to 20 items.
+Reallocating 'global_strs' (item size: 1) to 4000000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 6000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Reallocating 'wiz_functions' (item size: 4) to 9000 items.
+Reallocating 'singl_function' (item size: 4) to 100 items.
+Database file #1: bibliografia.bib
+Warning--entry type for "ASGEUPOS2021" isn't style-file defined
+--line 1 of file bibliografia.bib
+apacite.bst [2013/07/21 v6.03 APA bibliography style]
+Warning--No journal in Kadaj2001
+Warning--No journal in Kadaj
+You've used 3 entries,
+            6951 wiz_defined-function locations,
+            1284 strings with 10988 characters,
+and the built_in function-call counts, 3908 in all, are:
+= -- 530
+> -- 30
+< -- 114
++ -- 86
+- -- 12
+* -- 186
+:= -- 601
+add.period$ -- 13
+call.type$ -- 3
+change.case$ -- 51
+chr.to.int$ -- 0
+cite$ -- 8
+duplicate$ -- 76
+empty$ -- 187
+format.name$ -- 42
+if$ -- 838
+int.to.chr$ -- 0
+int.to.str$ -- 9
+missing$ -- 0
+newline$ -- 69
+num.names$ -- 24
+pop$ -- 60
+preamble$ -- 1
+purify$ -- 12
+quote$ -- 0
+skip$ -- 397
+stack$ -- 0
+substring$ -- 99
+swap$ -- 47
+text.length$ -- 9
+text.prefix$ -- 0
+top$ -- 1
+type$ -- 312
+warning$ -- 2
+while$ -- 15
+width$ -- 0
+write$ -- 74
+(There were 3 warnings)

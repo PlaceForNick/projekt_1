@@ -1,0 +1,72 @@
+\begin{thebibliography}{}
+
+\bibitem [\protect \citeauthoryear {%
+{ASG EUPOS}%
+}{%
+{ASG EUPOS}%
+}{%
+{\protect \APACyear {2021}}%
+}]{%
+ASGEUPOS2021}
+\APACinsertmetastar {%
+ASGEUPOS2021}%
+\begin{APACrefauthors}%
+{ASG EUPOS}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2021}{}{}.
+\newblock
+\APACrefbtitle {{Strona internetowa ASG-EUPOS}.} {{Strona internetowa
+  ASG-EUPOS}.}
+\newblock
+\APAChowpublished
+  {\url{http://www.asgeupos.pl/index.php?wpg_type=tech_transf&sub=xyz_blh}}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{prof. dr hab. inż. Roman Kadaj}%
+}{%
+{prof. dr hab. inż. Roman Kadaj}%
+}{%
+{\protect \APACyear {2001}}%
+}]{%
+Kadaj2001}
+\APACinsertmetastar {%
+Kadaj2001}%
+\begin{APACrefauthors}%
+{prof. dr hab. inż. Roman Kadaj}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2001}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Opracowanie naukowe}} {{Opracowanie naukowe}}.{\BBCQ}
+\newblock
+\APAChowpublished {\url{https://ewmapa.pl/dane/wytyczne_g-1.10.pdf}}.
+\PrintBackRefs{\CurrentBib}
+
+\bibitem [\protect \citeauthoryear {%
+{prof. dr hab. inż. Roman Kadaj}%
+}{%
+{prof. dr hab. inż. Roman Kadaj}%
+}{%
+{\protect \APACyear {2002}}%
+}]{%
+Kadaj}
+\APACinsertmetastar {%
+Kadaj}%
+\begin{APACrefauthors}%
+{prof. dr hab. inż. Roman Kadaj}.%
+\end{APACrefauthors}%
+\unskip\
+\newblock
+\APACrefYearMonthDay{2002}{}{}.
+\newblock
+{\BBOQ}\APACrefatitle {{Opracowanie naukowe}} {{Opracowanie naukowe}}.{\BBCQ}
+\newblock
+\APAChowpublished
+  {\url{http://www.geonet.net.pl/images/2002_12_uklady_wspolrz.pdf}}.
+\PrintBackRefs{\CurrentBib}
+
+\end{thebibliography}

@@ -1,0 +1,5 @@
+\babel@toc {polish}{}\relax 
+\contentsline {section}{\numberline {1}Cel ćwiczenia}{2}{section.1}%
+\contentsline {section}{\numberline {2}Wykorzystane narzędzia i materiały potrzebne do replikacji ćwiczenia}{2}{section.2}%
+\contentsline {section}{\numberline {3}przebieg ćwiczenia}{2}{section.3}%
+\contentsline {section}{\numberline {4}Podsumowanie}{3}{section.4}%
