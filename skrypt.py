@@ -668,20 +668,21 @@ class Transformacje():
         parser.add_argument('-Z2', help='wartosc wspolrzednej drugiego punktu Z [m]', required=False, default='')
         
         parser.add_argument('-s', help='wartosc dlugosci miedzy dwoma punktami [m]', required=False, default='')
-        parser.add_argument('-alfa', help="wartosc kat poziomego [Â° ' '']", required=False, default='')
-        parser.add_argument('-z', help="wartosc kat zenitalnego [Â° ' '']", required=False, default='')
+        parser.add_argument('-alfa', help="wartosc kat poziomego [° ' '']", required=False, default='')
+        parser.add_argument('-z', help="wartosc kat zenitalnego [° ' '']", required=False, default='')
            
-        parser.add_argument('-f', help="wartosc wspolrzednej f [Â° ' '']", required=False, default='')
-        parser.add_argument('-l', help="wartosc wspolrzednej l [Â° ' '']", required=False, default='')
+        parser.add_argument('-f', help="wartosc wspolrzednej f [° ' '']", required=False, default='')
+        parser.add_argument('-l', help="wartosc wspolrzednej l [° ' '']", required=False, default='')
         parser.add_argument('-H', help='wartosc wspolrzednej H [m]', required=False, default='')
         
         parser.add_argument('--model', help='model elipsoidy', choices=['grs80','wgs84', 'kra'], required=False, type=str, default='grs80')
         parser.add_argument('--metoda', help='metoda transformacji', choices=['xyz2flh','neu', 'flh2xyz','pl2000','pl1992'], required=False, type=str, default='')
         parser.add_argument('--zapis', help='zapis do pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default=False)
-        parser.add_argument('--output', help='nazwa pliku wyjsciowego (.txt)', required=False, type=str, default='output')
-        parser.add_argument('--input', help='nazwa pliku wejsciowego (.txt)', required=False, type=str, default='input')
+        parser.add_argument('--output', help='nazwa pliku z danymi wyjsciowymi (.txt)', required=False, type=str, default='output')
+        parser.add_argument('--input', help='nazwa pliku z danymi wejsciowymi (.txt)', required=False, type=str, default='input')
         parser.add_argument('--odczyt', help='odczyt z pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default=False)
-        parser.add_argument('--typ', help='typ danych zawartych we wczytywanym pliku', choices=['XYZ','XYZ2','flh','saz'], required=False, type=str, default='')
+        parser.add_argument('--typ', help='typ danych zawartych we wczytywanym pliku', nargs='+', choices=['XYZ','XYZ2','flh','saz'], required=False, type=str, default='')
+        parser.add_argument('-nr', help='wartosc wspolrzednej H [m]', nargs='+', required=False, default=[0], type=int)
         
         args = parser.parse_args()
         
@@ -698,7 +699,10 @@ class Transformacje():
         self.metoda = args.metoda
         
         if args.odczyt == True:
-            self.wczytajplik(args.input, args.typ)
+            i = 0
+            while i < len(args.typ):
+                self.wczytajplik(args.input, args.typ[i], args.nr[i])
+                i += 1
             self.__elipsoida(args.model)
             self.__zapiszplik(args.zapis, args.output)
             self.__wykonajmetode(self.metoda)
@@ -729,7 +733,7 @@ if __name__=='__main__':
     # print('\nPL1992\n', proba1.fl2PL1992())
     # print('\nPL2000\n', proba1.fl2PL2000())
     # print('\nNEU\n', proba1.xyz2neu())
-    print('\nHIRVONEN\n', proba1.xyz2flh())
+    # print('\nHIRVONEN\n', proba1.xyz2flh())
 
     proba2 = Transformacje(f='52 0 5.72012',
                            l='16 0 21.66234',
@@ -768,6 +772,6 @@ if __name__=='__main__':
                            s = 31000,
                            alfa = 280,
                            z = 90)
-    print(proba4.xyz2neu())
+    # print(proba4.xyz2neu())
     proba5 = Transformacje()
     proba5.wczytajzargparse()
