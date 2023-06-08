@@ -210,4 +210,7 @@ Program (w szczególności metoda ```__fromdms()```, ukryta przed użytkownikiem
 ## Błędy przy podaniu wartości poza zasięgiem stef odwzorowaczych układu PL2000
 
 Przy wczytaniu serii wielu danych znajdujących się poza zakresem stef odwzorowaczych układu PL2000 oraz próbie wykonania metody ```fl2PL2000```, program nie może opuścić pętli, przy jednoczesnym zwracaniu na konsolę błędu ```NieprawidlowaWartosc```.
+
+## Błąd przy elipsoidzie Krasowskiego
+Transformacja Krasowski na układ 2000 niestety nie działa poprawnie i program drukuje nam nie poprawne wartości współrzędnych, więc na ten moment przestrzegamy nad używaniem tej metody w tym przypadku. 
   
