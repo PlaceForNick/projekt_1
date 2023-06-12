@@ -51,8 +51,11 @@ Należy zwrócić uwagę, iż dane do obliczeń podajemy przy wywołaniu klasy, 
 
 ### Za pośrednictem pliku tekstowego:
 
-  Naszym plikiem wejściowym jest plik txt o nazwie 'wsp', w pliku znajdują sie podane współrzędne
+  Naszym plikiem wejściowym jest plik txt o nazwie 'wsp_xyz', w pliku znajdują sie podane współrzędne:
   ![image](https://user-images.githubusercontent.com/129080867/234604463-bbb852d6-9fcd-4cbc-84d8-7b1b482f379f.png)
+  
+  Innym przykładowym plikiem jest 'wsp_flh', wyglądający w następujący sposób:
+  ![image](https://github.com/PlaceForNick/projekt_1/assets/129080848/7fdac6f6-94ac-4be6-b9ef-725b9e657d00)
 
   Należy zwrócić uwagę na sposób sformatowania tego pliku. Nagłówek będzie zawsze stanowił 4 pierwsze linijki, a kolumny danych odzielone są przecinkami.   Istnieje też możliwość wczytania danych z pliku, który będzie zawierał więcej niż domyślne 3 kolumny danych. W takim przypadku należałoby przy wywołaniu metody wczytajzpliku() podać wartość nr, będząca nr kolumny, od której program ma rozpocząć odczytywać plik (oczywiście zaczynając liczenie od 0). Taki plik przykładowo wyglądałby następująco:
   ![image](https://user-images.githubusercontent.com/129080848/235291859-c2738aad-f188-4240-aca6-d835e7f929cc.png)
@@ -116,11 +119,27 @@ optional arguments:
                         we wczytywanym pliku tekstowym
 ```
 Całe komendy w konsoli git Bush mogłyby wyglądać zatem w sposób następujący:
+
+- wywołanie komunikatu help ze wszystkimi możliwymi komendami:
 ```
 python skrypt.py -h
+```
+- wywołanie metody neu dla pojedyńczych plików:
+```
 python skrypt.py -f "48 59 54.20935" -l "23 17 39.73740" -H 408.925 -X2 1 -Y2 2 -Z2 3 --metoda neu --model grs80 --zapis False
+```
+- wywołanie metody pl2000 dla współrzędnych XYZ zapisanych w pliku tekstowym:
+```
 python skrypt.py --odczyt True --input wsp_inp.txt --typ XYZ --metoda pl2000 --zapis False
 ```
+- wywołanie metody pl1992 dla współrzędnych flh zapisanych w pliku tekstowym wraz z zapisem wyniku do innego pliku:
+```
+python skrypt.py --odczyt True --input wsp_flh.txt --typ flh --zapis True --output testttt.txt --metoda pl1992 --model grs80
+ ```
+- wywołanie metody neu dla współrzędnych flh oraz saz, zawartych w tym samym pliku tekstowym wraz z zapisem wyniku do innego pliku:
+```
+python skrypt.py --odczyt True --zapis True --input wsp_mix.txt -nr 3 6 --typ flh saz --model grs80 --metoda neu --output testtttttt.txt
+``` 
 ## Przykładowe wywołania:
 ### Pierwsze kroki:
   Na początku pobieramy skrypt z zdalnego respozytorium https://github.com/PlaceForNick/projekt_1.git, odpalamy program python w wersji 3.9. Przed uruchomieniem programu powinniśmy upewnić się, że posiadamy wymagane biblioteki numpy i argparse. Jeśli nie, możemy je zainstalować przez wpisanie w konsolę następujących komend:
