@@ -682,7 +682,7 @@ class Transformacje():
         parser.add_argument('--input', help='nazwa pliku z danymi wejsciowymi (.txt)', required=False, type=str, default='input')
         parser.add_argument('--odczyt', help='odczyt z pliku tekstowego (.txt)', choices=[True, False], required=False, type=bool, default=False)
         parser.add_argument('--typ', help='typ danych zawartych we wczytywanym pliku', nargs='+', choices=['XYZ','XYZ2','flh','saz'], required=False, type=str, default='')
-        parser.add_argument('-nr', help='wartosc wspolrzednej H [m]', nargs='+', required=False, default=[0], type=int)
+        parser.add_argument('-nr', help='nr kolumny od ktorej zaczyna sie zestaw wspolrzedych we wczytywanym pliku tekstowym', nargs='+', required=False, default=[0], type=int)
         
         args = parser.parse_args()
         

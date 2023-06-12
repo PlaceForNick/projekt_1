@@ -81,11 +81,13 @@ usage: skrypt.py [-h] [-X X] [-Y Y] [-Z Z] [-X2 X2] [-Y2 Y2] [-Z2 Z2] [-s S]
                  [--model {grs80,wgs84,kra}]
                  [--metoda {xyz2flh,neu,flh2xyz,pl2000,pl1992}]
                  [--zapis {True,False}] [--output OUTPUT] [--input INPUT]
-                 [--odczyt {True,False}] [--typ {XYZ,XYZ2,flh,saz}]
+                 [--odczyt {True,False}]
+                 [--typ {XYZ,XYZ2,flh,saz} [{XYZ,XYZ2,flh,saz} ...]]
+                 [-nr NR [NR ...]]
 
 Transformacje wspolrzednych
 
-options:
+optional arguments:
   -h, --help            show this help message and exit
   -X X                  wartosc wspolrzednej pierwszegi punktu X [m]
   -Y Y                  wartosc wspolrzednej pierwszego punktu Y [m]
@@ -94,22 +96,24 @@ options:
   -Y2 Y2                wartosc wspolrzednej drugiego punktu Y [m]
   -Z2 Z2                wartosc wspolrzednej drugiego punktu Z [m]
   -s S                  wartosc dlugosci miedzy dwoma punktami [m]
-  -alfa ALFA            wartosc kat poziomego [° ' '']
-  -z Z                  wartosc kat zenitalnego [° ' '']
-  -f F                  wartosc wspolrzednej f [° ' '']
-  -l L                  wartosc wspolrzednej l [° ' '']
+  -alfa ALFA            wartosc kat poziomego [▒ ' '']
+  -z Z                  wartosc kat zenitalnego [▒ ' '']
+  -f F                  wartosc wspolrzednej f [▒ ' '']
+  -l L                  wartosc wspolrzednej l [▒ ' '']
   -H H                  wartosc wspolrzednej H [m]
   --model {grs80,wgs84,kra}
                         model elipsoidy
   --metoda {xyz2flh,neu,flh2xyz,pl2000,pl1992}
                         metoda transformacji
   --zapis {True,False}  zapis do pliku tekstowego (.txt)
-  --output OUTPUT       nazwa pliku wyjsciowego (.txt)
-  --input INPUT         nazwa pliku wejsciowego (.txt)
+  --output OUTPUT       nazwa pliku z danymi wyjsciowymi (.txt)
+  --input INPUT         nazwa pliku z danymi wejsciowymi (.txt)
   --odczyt {True,False}
                         odczyt z pliku tekstowego (.txt)
-  --typ {XYZ,XYZ2,flh,saz}
+  --typ {XYZ,XYZ2,flh,saz} [{XYZ,XYZ2,flh,saz} ...]
                         typ danych zawartych we wczytywanym pliku
+  -nr NR [NR ...]       nr kolumny od ktorej zaczyna sie zestaw wspolrzedych
+                        we wczytywanym pliku tekstowym
 ```
 Całe komendy w konsoli git Bush mogłyby wyglądać zatem w sposób następujący:
 ```
