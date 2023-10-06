@@ -10,13 +10,13 @@ class NieprawidlowaWartosc(Exception):
         
 class Transformacje():
         
-    def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z =''):
+    def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z ='', x2000='', y2000=''):
         
         self.__elipsoida(model) #wybor elipsoidy
         self.__zapiszplik(zapis, nazwa) #wybor zapisu do pliku txt     
 
         #zamiana podanych danych na liste
-        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z]
+        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z, x2000, y2000]
         dane_ost = []
         for wartosc in dane:
             if type(wartosc) == list:
@@ -37,6 +37,8 @@ class Transformacje():
         self.s = dane_ost[9]
         self.alfa = dane_ost[10]
         self.z = dane_ost[11]
+        self.x2000 = dane_ost[12]
+        self.y2000 = dane_ost[13]
         
         #zamiana stopni na radiany           
         dane_kat = [self.f, self.l, self.alfa, self.z]
@@ -174,6 +176,7 @@ class Transformacje():
             i = 0
             
             while i < len(self.X):
+                
                 X = self.X[i]
                 Y = self.Y[i]
                 Z = self.Z[i] 
@@ -241,6 +244,12 @@ class Transformacje():
         e2 = self.e2 
         N = a / np.sqrt(1 - e2 * np.sin(f)**2)
         return(N)
+
+    def __Mp(self, f):
+        a = self.a
+        e2 = self.e2
+        M = ((a * (1 - e2)) / (np.sqrt((1 - e2 * (np.sin(f))**2)**3)))
+        return(M)
 
     def __sigma(self,f):
         a = self.a 
@@ -341,8 +350,6 @@ class Transformacje():
             
         return(x_ost,y_ost)
         
-
-
     def fl2PL1992(self,l0=radians(19), m0 = 0.9993):
         '''
         Funkcja przelicza wspolrzedne geodezyjne na wspolrzedne prostokatne ukladu 1992.
@@ -409,7 +416,73 @@ class Transformacje():
             self.plik.close()
             
         return(x_ost,y_ost)
-      
+
+    def __f1(self, xgk):
+        a = self.a
+        e2 = self.e2
+        A0 = 1 - e2/4 - 3 * e2**2/64 - 5 * e2**3/256
+        f = xgk / (a * A0)
+        while True:
+            fs = f
+            s = self.__sigma(f)
+            f = fs + ((xgk - s)/(a * A0))
+            if abs(fs-f) < (0.000001/206265):
+                break
+        return(f)
+    
+    def PL20002fl(self,m0 = 0.999923):
+        a = self.a
+        e2 = self.e2
+        x_ost = []
+        y_ost = []
+        f_ost = []
+        l_ost = []
+        f_st = []
+        l_st = []
+        i = 0
+        while i < len(self.x2000):
+            x20 = self.x2000[i]
+            y20 = self.y2000[i]
+            if len(str(int(y20))) == 7 and len(str(int(x20))) == 7: #idk czy warunek na x aby na pewno jest dobry
+                ns = int(str(y20)[0])
+                if ns == 5:
+                    l0 = radians(15)
+                elif ns == 6:
+                    l0 = radians(18)
+                elif ns == 7:
+                    l0 = radians(21)
+                elif ns == 8:
+                    l0 = radians(24)
+                else:
+                    raise NieprawidlowaWartosc('Podana wartość wspolrzednej y jest poza zakresem odwzorowania PL2000')
+                xgk = x20/m0
+                ygk = (y20 - 500000 - ns*1000000)/m0
+                fi1 = self.__f1(xgk)
+                N1 = self.__Np(fi1)
+                M1 = self.__Mp(fi1)
+                t = tan(fi1)
+                b2 = a**2*(1-e2)
+                ep2 = (a**2 - b2)/b2
+                n2 = ep2 * cos(fi1)**2
+                fi = fi1 - ((ygk**2*t)/(2*M1*N1)) * (1 - (ygk**2/(12*N1**2)) * (5 + 3*t**2 + n2 - 9*n2*t**2 - 4*n2**20) + (ygk**4/(360*N1**4))*(61 + 90*t**2 + 45*t**4))
+                lam = l0 + (ygk/(N1*cos(fi1)))*(1 - (ygk**2/(6*N1**2))*(1 + 2*t**2 + n2) + (ygk**4/(120*N1**4)) * (5 + 28*t**2 + 24*t**4 +6*n2 + 8*n2*t**2))
+                
+                x_ost.append(xgk)
+                y_ost.append(ygk)
+                f_st.append(self.__dms(fi))
+                l_st.append(self.__dms(lam))
+                f_ost.append(fi)
+                l_ost.append(lam)
+                
+                i += 1
+                
+            else:
+                raise NieprawidlowaWartosc('Podana wartość wspolrzednej x lub/i y jest nieprawidlowa dla odwzorowania PL2000')
+        
+        self.f = f_ost
+        self.l = l_ost
+        return(x_ost, y_ost, f_st, l_st)
+    
     def __saz2neu(self, s, alfa, z):
         dX = np.array([s * np.sin(z) * np.cos(alfa),
                        s * np.sin(z) * np.sin(alfa),
@@ -528,10 +601,17 @@ class Transformacje():
             i = 0
             
             while i < len(self.f):
+                
+                if self.f == [''] or self.l == ['']:
+                    try:
+                        self.PL20002fl()
+                    except:
+                        pass
+                
                 f = self.f[i]
                 l = self.l[i]
                 h = self.h[i]
-    
+                
                 N = self.__Np(f)
                 x = (N+h)*np.cos(f)*np.cos(l)
                 y = (N+h)*np.cos(f)*np.sin(l)
@@ -773,5 +853,15 @@ if __name__=='__main__':
                            alfa = 280,
                            z = 90)
     # print(proba4.xyz2neu())
+    
+    proba6 = Transformacje(x2000 = [5763554.505, 5000000],
+                           y2000 = [5569082.652, 5000000])
+    # print(proba6.PL20002fl())    
+    
+    proba7 = Transformacje(x2000 = 5763554.505,
+                           y2000 = 5569082.652,
+                           h = 100.000)
+    print(proba7.flh2xyz())
+    
     proba5 = Transformacje()
     proba5.wczytajzargparse()
