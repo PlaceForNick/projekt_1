@@ -10,13 +10,14 @@ class NieprawidlowaWartosc(Exception):
         
 class Transformacje():
         
-    def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z ='', x2000='', y2000='', x1992='', y1992=''):
+    def __init__(self, model='grs80', zapis=False, posrednie=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z ='', x2000='', y2000='', x1992='', y1992='', xgk='', ygk=''):
         
         self.__elipsoida(model) #wybor elipsoidy
         self.__zapiszplik(zapis, nazwa) #wybor zapisu do pliku txt     
-
+        self.posrednie = posrednie #definiuje czy ma wypluwac obliczenia posrednie
+        
         #zamiana podanych danych na liste
-        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z, x2000, y2000, x1992, y1992]
+        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z, x2000, y2000, x1992, y1992, xgk, ygk]
         dane_ost = []
         for wartosc in dane:
             if type(wartosc) == list:
@@ -41,6 +42,8 @@ class Transformacje():
         self.y2000 = dane_ost[13]
         self.x1992 = dane_ost[14]
         self.y1992 = dane_ost[15]
+        self.xgk = dane_ost[16]
+        self.ygk = dane_ost[17]
         
         #zamiana stopni na radiany           
         dane_kat = [self.f, self.l, self.alfa, self.z]
@@ -303,6 +306,9 @@ class Transformacje():
     
             if self.f == [''] or self.l == ['']:
                 self.xyz2flh()
+                if self.posrednie == True:
+                    print('Wykonano operacje xyz2flh:\n'
+                           f'{self.f, self.l}')
             f = self.f[i]
             l = self.l[i]
 
@@ -566,11 +572,18 @@ class Transformacje():
             
                 if self.f == [''] or self.l == ['']:
                     self.xyz2flh()
+                    if self.posrednie == True:
+                        print('Wykonano operacje xyz2flh:\n'
+                              f'{self.f, self.l, self.h}\n')
                 f = self.f[i]
                 l = self.l[i]
                 
                 if self.X2 == [''] or self.Y2 == [''] or self.Z2 == ['']:  
                     dX = self.__saz2neu(self.s[i], self.alfa[i], self.z[i])
+                    if self.posrednie == True:
+                        print('Wykonano operacje __saz2neu:\n'
+                              f'{self.X2, self.Y2, self.Z2}\n')
+                    
                 else:
                     dX = [self.X2[i], self.Y2[i], self.Z2[i]]
         
@@ -645,8 +658,14 @@ class Transformacje():
                 if self.f == [''] or self.l == ['']:
                     if self.x2000 != [''] and self.y2000 != ['']:
                         self.PL20002fl()
+                        if self.posrednie == True:
+                            print('Wykonano operacje PL20002fl:\n'
+                                   f'{self.f, self.l}\n')
                     elif self.x1992 != [''] and self.y1992 != ['']:
                         self.PL19922fl()
+                        if self.posrednie == True:
+                            print('Wykonano operacje PL19922fl:\n'
+                                   f'{self.f, self.l}')
                     else:
                         pass
                 
@@ -902,7 +921,8 @@ if __name__=='__main__':
     
     proba7 = Transformacje(x2000 = 5763554.505,
                            y2000 = 5569082.652,
-                           h = 100.000)
+                           h = 100.000,
+                           posrednie = True)
     print(proba7.flh2xyz())
     
     proba8 = Transformacje(x1992 = 463717.558,
