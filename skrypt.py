@@ -10,13 +10,13 @@ class NieprawidlowaWartosc(Exception):
         
 class Transformacje():
         
-    def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z ='', x2000='', y2000=''):
+    def __init__(self, model='grs80', zapis=False, nazwa='', X='', Y='', Z='', f='', l='', h='', X2='', Y2='', Z2='', s='', alfa='', z ='', x2000='', y2000='', x1992='', y1992=''):
         
         self.__elipsoida(model) #wybor elipsoidy
         self.__zapiszplik(zapis, nazwa) #wybor zapisu do pliku txt     
 
         #zamiana podanych danych na liste
-        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z, x2000, y2000]
+        dane = [X, Y, Z, f, l, h, X2, Y2, Z2, s, alfa, z, x2000, y2000, x1992, y1992]
         dane_ost = []
         for wartosc in dane:
             if type(wartosc) == list:
@@ -39,6 +39,8 @@ class Transformacje():
         self.z = dane_ost[11]
         self.x2000 = dane_ost[12]
         self.y2000 = dane_ost[13]
+        self.x1992 = dane_ost[14]
+        self.y1992 = dane_ost[15]
         
         #zamiana stopni na radiany           
         dane_kat = [self.f, self.l, self.alfa, self.z]
@@ -483,6 +485,44 @@ class Transformacje():
         self.l = l_ost
         return(x_ost, y_ost, f_st, l_st)
     
+    def PL19922fl(self,l0=radians(19),m0=0.9993):
+        a = self.a
+        e2 = self.e2
+        x_ost = []
+        y_ost = []
+        f_ost = []
+        l_ost = []
+        f_st = []
+        l_st = []
+        i = 0
+        while i < len(self.x1992):
+            x = self.x1992[i]
+            y = self.y1992[i]
+            xgk = (x + 5300000)/m0
+            ygk = (y - 500000)/m0
+            fi1 = self.__f1(xgk)
+            N1 = self.__Np(fi1)
+            M1 = self.__Mp(fi1)
+            t = tan(fi1)
+            b2 = a**2*(1-e2)
+            ep2 = (a**2 - b2)/b2
+            n2 = ep2 * cos(fi1)**2
+            fi = fi1 - ((ygk**2*t)/(2*M1*N1)) * (1 - (ygk**2/(12*N1**2)) * (5 + 3*t**2 + n2 - 9*n2*t**2 - 4*n2**20) + (ygk**4/(360*N1**4))*(61 + 90*t**2 + 45*t**4))
+            lam = l0 + (ygk/(N1*cos(fi1)))*(1 - (ygk**2/(6*N1**2))*(1 + 2*t**2 + n2) + (ygk**4/(120*N1**4)) * (5 + 28*t**2 + 24*t**4 +6*n2 + 8*n2*t**2))
+            
+            x_ost.append(xgk)
+            y_ost.append(ygk)
+            f_st.append(self.__dms(fi))
+            l_st.append(self.__dms(lam))
+            f_ost.append(fi)
+            l_ost.append(lam)
+            
+            i += 1
+            
+        self.f = f_ost
+        self.l = l_ost
+        return(x_ost, y_ost, f_st, l_st)
+    
     def __saz2neu(self, s, alfa, z):
         dX = np.array([s * np.sin(z) * np.cos(alfa),
                        s * np.sin(z) * np.sin(alfa),
@@ -603,9 +643,11 @@ class Transformacje():
             while i < len(self.f):
                 
                 if self.f == [''] or self.l == ['']:
-                    try:
+                    if self.x2000 != [''] and self.y2000 != ['']:
                         self.PL20002fl()
-                    except:
+                    elif self.x1992 != [''] and self.y1992 != ['']:
+                        self.PL19922fl()
+                    else:
                         pass
                 
                 f = self.f[i]
@@ -862,6 +904,11 @@ if __name__=='__main__':
                            y2000 = 5569082.652,
                            h = 100.000)
     print(proba7.flh2xyz())
+    
+    proba8 = Transformacje(x1992 = 463717.558,
+                           y1992 = 294552.995,
+                           h = 100.000)
+    print(proba8.flh2xyz())
     
     proba5 = Transformacje()
     proba5.wczytajzargparse()
